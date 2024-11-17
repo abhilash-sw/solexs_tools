@@ -5,7 +5,7 @@
 # @File Name: __init__.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-17 10:42:01 pm
+# @Last Modified time: 2024-11-17 10:56:48 pm
 #####################################################
 
 __version__ = 0.1
@@ -23,8 +23,6 @@ def get_caldb_file2(subpath):
     print(response_file_path)
     return response_file_path
 
-import pkg_resources  # For accessing package data
-
 def get_caldb_file(subpath):
     """
     Get the absolute path to a file in the CALDB directory.
@@ -38,6 +36,7 @@ def get_caldb_file(subpath):
     try:
         # Construct the full path to the data file
         resource_path = os.path.join("CALDB", "aditya-l1", "solexs", "data", "cpf", subpath)
+        print(pkg_resources.resource_filename("solexs_tools", resource_path))
         return pkg_resources.resource_filename("solexs_tools", resource_path)
     except Exception as e:
         raise FileNotFoundError(f"File '{subpath}' not found in CALDB: {e}")
