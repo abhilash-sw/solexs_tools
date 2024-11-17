@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-17 09:27:59 pm
+# @Last Modified time: 2024-11-17 09:42:34 pm
 #####################################################
 
 import argparse
@@ -14,7 +14,7 @@ from astropy.io import fits
 import numpy as np
 import os
 
-from . import __version__
+from . import __version__, get_caldb_file
 
 
 def solexs_genspec(spec_file,tstart,tstop,outfile=None,clobber=True): # times in unix seconds
