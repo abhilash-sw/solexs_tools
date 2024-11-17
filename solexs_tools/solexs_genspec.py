@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-17 09:58:20 pm
+# @Last Modified time: 2024-11-17 11:35:45 pm
 #####################################################
 
 import argparse
@@ -14,7 +14,8 @@ from astropy.io import fits
 import numpy as np
 import os
 
-from . import __version__, get_caldb_file
+from . import __version__
+from .caldb_config import CALDB_BASE_DIR
 
 
 def solexs_genspec(spec_file,tstart,tstop,outfile=None,clobber=True): # times in unix seconds
@@ -89,8 +90,8 @@ def solexs_genspec(spec_file,tstart,tstop,outfile=None,clobber=True): # times in
     tstop_dt = datetime.datetime.fromtimestamp(tstop)
     
     filter_sdd = hdu1[1].header['FILTER']
-    arf_file = get_caldb_file(os.path.join('arf',f'solexs_arf_{filter_sdd}.fits'))
-    rmf_file = get_caldb_file(os.path.join('response','rmf',f'solexs_gaussian_{filter_sdd}_512.rmf'))
+    arf_file = os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}.fits')
+    rmf_file = os.path.join(CALDB_BASE_DIR,'response','rmf',f'solexs_gaussian_{filter_sdd}_512.rmf')
 
     _hdu_list[1].header.set('TSTART',tstart_dt.isoformat())
     _hdu_list[1].header.set('TSTOP',tstop_dt.isoformat())
