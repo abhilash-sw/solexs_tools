@@ -1,1 +1,3 @@
 recursive-include CALDB *
+include CALDB/aditya-l1/solexs/data/cpf/arf/*
+include CALDB/aditya-l1/solexs/data/cpf/response/rmf/*
