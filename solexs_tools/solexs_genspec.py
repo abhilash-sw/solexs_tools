@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-17 09:42:34 pm
+# @Last Modified time: 2024-11-17 09:58:20 pm
 #####################################################
 
 import argparse
@@ -29,7 +29,6 @@ def solexs_genspec(spec_file,tstart,tstop,outfile=None,clobber=True): # times in
     data=hdu.data
 
     time_solexs = data['TSTART']
-    # tbinsize=(data['TSTOP'][0]-data['TSTART'][0])
     
     exposure=data['EXPOSURE']
 
@@ -90,11 +89,13 @@ def solexs_genspec(spec_file,tstart,tstop,outfile=None,clobber=True): # times in
     tstop_dt = datetime.datetime.fromtimestamp(tstop)
     
     filter_sdd = hdu1[1].header['FILTER']
+    arf_file = get_caldb_file(os.path.join('arf',f'solexs_arf_{filter_sdd}.fits'))
+    rmf_file = get_caldb_file(os.path.join('response','rmf',f'solexs_gaussian_{filter_sdd}_512.rmf'))
 
     _hdu_list[1].header.set('TSTART',tstart_dt.isoformat())
     _hdu_list[1].header.set('TSTOP',tstop_dt.isoformat())
     _hdu_list[1].header.set('TIMESYS', 'UTC')
-    _hdu_list[1].header.set('EXPOSURE',f'{exposure:.4f}')
+    _hdu_list[1].header.set('EXPOSURE',f'{exposure:.0f}')
 
     
     _HEADER_KEYWORDS = (
@@ -117,8 +118,8 @@ def solexs_genspec(spec_file,tstart,tstop,outfile=None,clobber=True): # times in
         ("HDUCLAS3", "COUNT ", ""),
         ("HDUCLAS4", "TYPE:I ", ""),
         ("FILTER", filter_sdd, "Filter used"),
-        ('RESPFILE', 'solexs_gaussian_SDD2_512.rmf'),
-        ('ANCRFILE', 'solexs_arf_SDD2.fits'),
+        ('RESPFILE', rmf_file),
+        ('ANCRFILE', arf_file),
         ('BACKFILE','None'),        
         ("CHANTYPE", "PI", "Channel type"),
         ("POISSERR", False, "Are the rates Poisson distributed"),
