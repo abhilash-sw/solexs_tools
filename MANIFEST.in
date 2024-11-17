@@ -1,3 +1,3 @@
-recursive-include CALDB *
-include CALDB/aditya-l1/solexs/data/cpf/arf/*
-include CALDB/aditya-l1/solexs/data/cpf/response/rmf/*
+recursive-include solexs_tools/CALDB *
+include solexs_tools/CALDB/aditya-l1/solexs/data/cpf/arf/*
+include solexs_tools/CALDB/aditya-l1/solexs/data/cpf/response/rmf/*

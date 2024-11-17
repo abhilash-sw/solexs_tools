@@ -5,7 +5,7 @@
 # @File Name: setup.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-17 09:46:19 pm
+# @Last Modified time: 2024-11-17 10:35:58 pm
 #####################################################
 
 from setuptools import setup, find_packages
@@ -20,7 +20,7 @@ setup(
     package_data={
         # Include all files in CALDB
         "solexs_tools": [
-            "CALDB/aditya-l1/solexs/data/cpf/*/*"
+            "CALDB/aditya-l1/solexs/data/cpf/*/*/*"
         ],
     },
     include_package_data=True,  # Ensures package_data is included
