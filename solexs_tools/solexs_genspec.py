@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-18 08:15:28 am
+# @Last Modified time: 2024-11-18 08:33:14 am
 #####################################################
 
 import argparse
@@ -16,6 +16,7 @@ import os
 
 from . import __version__
 from .caldb_config import CALDB_BASE_DIR
+from .time_utils import unix_time_to_utc
 
 
 def solexs_genspec(spec_file,tstart,tstop,outfile=None,clobber=True): # times in unix seconds
@@ -93,6 +94,9 @@ def solexs_genspec(spec_file,tstart,tstop,outfile=None,clobber=True): # times in
     arf_file = os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}.fits')
     rmf_file = os.path.join(CALDB_BASE_DIR,'response','rmf',f'solexs_gaussian_{filter_sdd}_512.rmf')
 
+    print(f'ARF: {arf_file}')
+    print(f'RMF: {rmf_file}')
+
     _hdu_list[1].header.set('TSTART',tstart_dt.isoformat())
     _hdu_list[1].header.set('TSTOP',tstop_dt.isoformat())
     _hdu_list[1].header.set('TIMESYS', 'UTC')
@@ -154,7 +158,7 @@ def solexs_genspec(spec_file,tstart,tstop,outfile=None,clobber=True): # times in
         ("TELESCOP", 'AL1' , 'Name of mission/satellite'),
         ("INSTRUME", 'SoLEXS'      , 'Name of Instrument/detector'),
         ("ORIGIN"  , 'SoLEXSPOC'       , 'Source of FITS file'),
-        ("CREATOR" , f'solexs_genspec-{__version__}'  , 'Creator of file'),
+        ("CREATOR" , f'solexs_tools-{__version__}'  , 'Creator of file'),
         ("FILENAME", outfile            , 'Name of file'),
         ("CONTENT" , 'Type I PI file' , 'File content'),
         # ("VERSION" , __data_version__ , 'Data Product Version'),
@@ -187,7 +191,12 @@ def main():
     # Parse arguments
     args = parser.parse_args()
 
-    # Call the function with the parsed arguments
+    tstart_utc_time_str = unix_time_to_utc(args.tstart)
+    tstop_utc_time_str = unix_time_to_utc(args.tstop)
+
+    print(f'Start Time: {tstart_utc_time_str}')
+    print(f'Stop Time: {tstop_utc_time_str}')
+
     try:
         outfile_name = solexs_genspec(args.infile, args.tstart, args.tstop, outfile=args.outfile, clobber=args.clobber)
         print(f"Output written to {outfile_name}.")

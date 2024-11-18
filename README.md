@@ -53,7 +53,7 @@ solexs-genspec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> [-o <outfile>] [-
 
 **Example**:
 ```bash
-solexs-genspec input_file.fits 1633046400 1633132800 -o output.pha --clobber True
+solexs-genspec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tstop 1707715860
 ```
 
 ---
@@ -71,8 +71,8 @@ solexs-time2utc <unix_time>
 
 **Example**:
 ```bash
-solexs-time2utc 1633046400
-# Output: UTC Time: 2021-10-01T00:00:00+00:00
+solexs-time2utc 1707715800
+# Output: UTC Time: 2024-02-12T11:00:00
 ```
 
 ---
@@ -90,8 +90,8 @@ solexs-utc2time <utc_time>
 
 **Example**:
 ```bash
-solexs-utc2time 2021-10-01T00:00:00
-# Output: Unix Timestamp: 1633046400
+solexs-utc2time 2024-02-12T11:00:00
+# Output: Unix Timestamp: 1707715800
 ```
 
 ---
