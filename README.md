@@ -46,6 +46,7 @@ solexs-genspec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> [-o <outfile>] [-
 - `<l1_pi_file>`: Path to the Level 1 PI spectrogram file (Type II)
 - `<tstart>`: Start time in Unix seconds
 - `<tstop>`: Stop time in Unix seconds
+- `<l1_gti_file>`: Path to the Level 1 Good Time Interval File
 
 **Options**:
 - `-o, --outfile`: Name of the output file.
@@ -53,7 +54,7 @@ solexs-genspec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> [-o <outfile>] [-
 
 **Example**:
 ```bash
-solexs-genspec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tstop 1707715860
+solexs-genspec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tstop 1707715860 -gti AL1_SOLEXS_20240212_SDD2_L1.gti.gz
 ```
 
 ---

@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-18 08:33:14 am
+# @Last Modified time: 2024-11-18 09:36:29 am
 #####################################################
 
 import argparse
@@ -19,7 +19,7 @@ from .caldb_config import CALDB_BASE_DIR
 from .time_utils import unix_time_to_utc
 
 
-def solexs_genspec(spec_file,tstart,tstop,outfile=None,clobber=True): # times in unix seconds
+def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): # times in unix seconds
 
     hdu1 = fits.open(spec_file)
 
@@ -34,7 +34,20 @@ def solexs_genspec(spec_file,tstart,tstop,outfile=None,clobber=True): # times in
     
     exposure=data['EXPOSURE']
 
+    hdu_gti = fits.open(gti_file)
+    gti_data = hdu_gti[1].data
+
+    gti_inds = np.array([False]*len(time_solexs))
+
+    for i in range(len(gti_data)):
+        row_gti_inds = (time_solexs >= gti_data['START'][i]) & (
+            time_solexs < gti_data['STOP'][i])
+        gti_inds[row_gti_inds] = True
+
     inds = (time_solexs >= tstart) & (time_solexs < tstop)
+
+    inds = inds & gti_inds
+
 
     data_f = data[inds]
 
@@ -185,6 +198,7 @@ def main():
     parser.add_argument('-i','--infile', type=str, help='Path to the Level 1 PI spectrogram file (Type II)')
     parser.add_argument('-tstart', type=int, help='Start time in Unix seconds')
     parser.add_argument('-tstop', type=int, help='Stop time in Unix seconds')
+    parser.add_argument('-gti', '--gti_file', type=str, help='Path to the Level 1 Good Time Interval File')
     parser.add_argument('-o','--outfile', type=str, help='Output file name (optional)', default=None)
     parser.add_argument('-c','--clobber', type=bool, default=True, help='Overwrite existing file if it exists')
 
@@ -198,7 +212,7 @@ def main():
     print(f'Stop Time: {tstop_utc_time_str}')
 
     try:
-        outfile_name = solexs_genspec(args.infile, args.tstart, args.tstop, outfile=args.outfile, clobber=args.clobber)
+        outfile_name = solexs_genspec(args.infile, args.tstart, args.tstop, args.gti_file, outfile=args.outfile, clobber=args.clobber)
         print(f"Output written to {outfile_name}.")
     except Exception as e:
         print(f"Error: {e}")
