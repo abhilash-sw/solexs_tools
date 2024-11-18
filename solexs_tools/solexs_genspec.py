@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-17 11:35:45 pm
+# @Last Modified time: 2024-11-18 08:15:28 am
 #####################################################
 
 import argparse
@@ -193,6 +193,3 @@ def main():
         print(f"Output written to {outfile_name}.")
     except Exception as e:
         print(f"Error: {e}")
-
-if __name__ == '__main__':
-    main()
