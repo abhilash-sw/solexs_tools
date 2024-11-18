@@ -27,9 +27,9 @@ Before installing **SoLEXS_Tools**, ensure that the following dependencies are m
 
 ## Installation
 ```bash
-tar xvf solexs_tools-0.1.tar.gz
+tar xvf solexs_tools-m.n.tar.gz
 cd solexs_tools
-pip install .
+python setup.py install
 ```
 
 ## CLI Commands
