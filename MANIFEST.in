@@ -1,3 +1,4 @@
 recursive-include CALDB *
 include CALDB/aditya-l1/solexs/data/cpf/arf/solexs_arf_SDD2.fits
 include CALDB/aditya-l1/solexs/data/cpf/response/rmf/solexs_gaussian_SDD2_512.rmf
+exclude solexs_tools/caldb_config.py

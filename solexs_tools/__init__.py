@@ -5,7 +5,7 @@
 # @File Name: __init__.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-17 11:34:00 pm
+# @Last Modified time: 2024-11-18 10:32:55 am
 #####################################################
 
-__version__ = 0.1
+__version__ = 0.2

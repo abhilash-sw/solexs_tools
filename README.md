@@ -39,7 +39,7 @@ Generate a type-I PI file with spectral data for a specified time range.
 
 **Usage**:
 ```bash
-solexs-genspec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> [-o <outfile>] [--clobber <True/False>]
+solexs-genspec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -gti <l1_gti_file> [-o <outfile>] [--clobber <True/False>]
 ```
 
 **Arguments**:
