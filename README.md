@@ -119,3 +119,6 @@ print(f"CALDB Base Directory: {CALDB_BASE_DIR}")
 ```
 
 ---
+
+## Example Jupyter Notebook
+The package includes an example notebook that demonstrates how to perform spectral fitting of SoLEXS data using XSPEC.
