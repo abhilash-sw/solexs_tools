@@ -1,6 +1,5 @@
 # SoLEXS_Tools
-**SoLEXS_Tools** is a Python package for analyzing and processing data from the **SoLEXS** (Solar Low Energy X-ray Spectrometer) instrument on the **Aditya-L1** mission. It provides tools for SoLEXS data analysis. 
-
+**SoLEXS_Tools** is a Python package developed to facilitate the processing and preparation of data from the **SoLEXS** (Solar Low Energy X-ray Spectrometer) instrument on the **Aditya-L1** mission. It provides essential tools and utilities generating and managing spectral data and calibration files, enabling users to perform spectral analysis using specialized tools such as **XSPEC** or **Sherpa**. The package includes SoLEXS calibration database (**CALDB**), which provides essential calibration files such as Auxiliary Response Files (**ARF**) and Redistribution Matrix Files (**RMF**).
 ---
 
 ## Requirements
@@ -13,8 +12,16 @@ Before installing **SoLEXS_Tools**, ensure that the following dependencies are m
    python3 --version
    ```
 
-2. **XSPEC**
-   - XSPEC is required for advanced spectral analysis. Install XSPEC as part of the HEASoft suite from [HEASoft's official website](https://heasarc.gsfc.nasa.gov/xanadu/xspec/).
+2. External Python Packages
+   **NumPy, Astropy**
+   Install the dependencies using pip:
+   ```bash
+   pip install numpy astropy
+   ```
+
+## Tools for Spectral Analysis
+1. **XSPEC**
+   For spectral fitting and analysis. Install XSPEC as part of the HEASoft suite from [HEASoft's official website](https://heasarc.gsfc.nasa.gov/xanadu/xspec/).
 
    **Verify XSPEC Installation**:
    Open a terminal and type:
@@ -23,19 +30,22 @@ Before installing **SoLEXS_Tools**, ensure that the following dependencies are m
    ```
    If XSPEC starts without errors, the installation is successful.
 
+2. **Sherpa**
+   An alternative Python-based spectral fitting and analysis tool available [here](https://sherpa.readthedocs.io).
 ---
 
 ## Installation
 ```bash
 tar xvf solexs_tools-m.n.tar.gz
 cd solexs_tools
+python setup.py build
 python setup.py install
 ```
 
 ## CLI Commands
 
 ### `solexs-genspec`
-Generate a type-I PI file with spectral data for a specified time range.
+Generate a type-I PI file from Level 1 PI spectrogram file (Type II) for a specified time range.
 
 **Usage**:
 ```bash
