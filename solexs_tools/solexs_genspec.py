@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-18 09:36:29 am
+# @Last Modified time: 2024-12-18 01:41:44 pm
 #####################################################
 
 import argparse
@@ -200,7 +200,7 @@ def main():
     parser.add_argument('-tstop', type=int, help='Stop time in Unix seconds')
     parser.add_argument('-gti', '--gti_file', type=str, help='Path to the Level 1 Good Time Interval File')
     parser.add_argument('-o','--outfile', type=str, help='Output file name (optional)', default=None)
-    parser.add_argument('-c','--clobber', type=bool, default=True, help='Overwrite existing file if it exists')
+    parser.add_argument('-c','--clobber', type=bool, default=False, help='Overwrite existing file if it exists')
 
     # Parse arguments
     args = parser.parse_args()
