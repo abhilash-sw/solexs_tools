@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-18 01:43:33 pm
+# @Last Modified time: 2024-12-18 04:54:08 pm
 #####################################################
 
 import argparse
@@ -13,6 +13,7 @@ import datetime
 from astropy.io import fits
 import numpy as np
 import os
+import warnings
 
 from . import __version__
 from .caldb_config import CALDB_BASE_DIR
@@ -41,15 +42,28 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
 
     for i in range(len(gti_data)):
         row_gti_inds = (time_solexs >= gti_data['START'][i]) & (
-            time_solexs < gti_data['STOP'][i])
+            time_solexs <= gti_data['STOP'][i])
         gti_inds[row_gti_inds] = True
 
-    inds = (time_solexs >= tstart) & (time_solexs < tstop)
+    max_time = np.nanmax(time_solexs)
+    if tstop > max_time:
+        warnings.warn(
+            f"tstop {tstop}) is greater than the last available time in the L1 PI file ({max_time}). "
+            f"Setting tstop to {max_time}.",
+            UserWarning
+            )
+        tstop = max_time
+
+    inds = (time_solexs >= tstart) & (time_solexs <= tstop)
 
     inds = inds & gti_inds
 
 
     data_f = data[inds]
+
+    if len(data_f) == 0:
+        raise ValueError(f"No valid data found for the specified time range ({tstart} to {tstop}).")
+
 
     channel = data_f[0][3]
     n_ch = len(channel)
