@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-18 04:56:12 pm
+# @Last Modified time: 2024-12-18 04:58:43 pm
 #####################################################
 
 import argparse
@@ -200,8 +200,8 @@ def main():
 
     # Add arguments
     parser.add_argument('-i','--infile', type=str, help='Path to the Level 1 PI spectrogram file (Type II)')
-    parser.add_argument('-tstart', type=int, help='Start time in Unix seconds')
-    parser.add_argument('-tstop', type=int, help='Stop time in Unix seconds')
+    parser.add_argument('-tstart', type=float, help='Start time in Unix seconds')
+    parser.add_argument('-tstop', type=float, help='Stop time in Unix seconds')
     parser.add_argument('-gti', '--gti_file', type=str, help='Path to the Level 1 Good Time Interval File')
     parser.add_argument('-o','--outfile', type=str, help='Output file name (optional)', default=None)
     parser.add_argument('-c','--clobber', type=bool, default= False, help='Overwrite existing file if it exists')
