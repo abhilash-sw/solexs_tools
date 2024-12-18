@@ -1,6 +1,6 @@
 recursive-include CALDB *
 include CALDB/arf/solexs_arf_SDD2.fits
-include CALDB/response/rmf/solexs_gaussian_SDD2_512.rmf
+include CALDB/response/rmf/solexs_gaussian_SDD2_340.rmf
 include notebooks/SoLEXS_Spectral_Analysis_with_XSPEC.ipynb
 
 exclude solexs_tools/caldb_config.py
