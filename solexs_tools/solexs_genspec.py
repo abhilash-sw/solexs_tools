@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-18 04:54:08 pm
+# @Last Modified time: 2024-12-18 04:55:29 pm
 #####################################################
 
 import argparse
@@ -79,14 +79,6 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
         exposure = exposure + di[5]
 
     stat_err = np.sqrt(spec_data)
-
-    grp = np.ones(512)
-
-    for i in range(168,512):
-        if i%2 == 0:
-            grp[i] = 1
-        else:
-            grp[i] = -1    
     
     # writing file
     hdu_list = []
@@ -99,14 +91,12 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
     col2 = fits.Column(name='COUNTS',format='1E',array=spec_data)
     col3 = fits.Column(name='STAT_ERR',format='1E',array=stat_err)
     col4 = fits.Column(name='SYS_ERR',format='1E',array=sys_err)
-    col5 = fits.Column(name='GROUPING',format='1J',array=grp)
 
     fits_columns.append(col1)
     fits_columns.append(col2)
     fits_columns.append(col3)
     fits_columns.append(col4)
-    fits_columns.append(col5)
-
+    
     hdu_pha = fits.BinTableHDU.from_columns(fits.ColDefs(fits_columns))
     hdu_pha.name = 'SPECTRUM'
                                                                        
