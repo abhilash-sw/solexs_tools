@@ -5,7 +5,7 @@
 # @File Name: setup.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-19 03:46:43 pm
+# @Last Modified time: 2024-12-18 01:47:11 pm
 #####################################################
 
 from setuptools import setup, find_packages
@@ -45,7 +45,7 @@ setup(
 )
 
 # Write CALDB base directory to a config file
-caldb_base = os.path.abspath(os.path.join(os.path.dirname(__file__), "CALDB", "aditya-l1", "solexs", "data", "cpf"))
+caldb_base = os.path.abspath(os.path.join(os.path.dirname(__file__), "CALDB"))
 config_file = os.path.join("solexs_tools", "caldb_config.py")
 with open(config_file, "w") as f:
     f.write(f"CALDB_BASE_DIR = '{caldb_base}'\n")
