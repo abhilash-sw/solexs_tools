@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-18 04:55:29 pm
+# @Last Modified time: 2024-12-18 04:56:12 pm
 #####################################################
 
 import argparse
@@ -108,7 +108,7 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
     tstop_dt = datetime.datetime.fromtimestamp(tstop)
     
     filter_sdd = hdu1[1].header['FILTER']
-    arf_file = os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}.fits')
+    arf_file = os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}.arf')
     rmf_file = os.path.join(CALDB_BASE_DIR,'response','rmf',f'solexs_gaussian_{filter_sdd}_512.rmf')
 
     print(f'ARF: {arf_file}')
