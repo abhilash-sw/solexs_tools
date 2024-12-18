@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-18 05:00:33 pm
+# @Last Modified time: 2024-12-18 05:11:59 pm
 #####################################################
 
 import argparse
@@ -20,67 +20,9 @@ from .caldb_config import CALDB_BASE_DIR
 from .time_utils import unix_time_to_utc
 
 
-def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): # times in unix seconds
-
-    hdu1 = fits.open(spec_file)
-
-    if hdu1[0].header['CONTENT'] != 'Type II PHA file':
-        raise TypeError('Input File is not Type II PHA file.')
-
-    hdu=fits.BinTableHDU.from_columns(hdu1[1].columns)
-
-    data=hdu.data
-
-    time_solexs = data['TSTART']
-    
-    exposure=data['EXPOSURE']
-
-    hdu_gti = fits.open(gti_file)
-    gti_data = hdu_gti[1].data
-
-    gti_inds = np.array([False]*len(time_solexs))
-
-    for i in range(len(gti_data)):
-        row_gti_inds = (time_solexs >= gti_data['START'][i]) & (
-            time_solexs <= gti_data['STOP'][i])
-        gti_inds[row_gti_inds] = True
-
-    max_time = np.nanmax(time_solexs)
-    if tstop > max_time:
-        warnings.warn(
-            f"tstop {tstop}) is greater than the last available time in the L1 PI file ({max_time}). "
-            f"Setting tstop to {max_time}.",
-            UserWarning
-            )
-        tstop = max_time
-
-    inds = (time_solexs >= tstart) & (time_solexs <= tstop)
-
-    inds = inds & gti_inds
-
-
-    data_f = data[inds]
-
-    if len(data_f) == 0:
-        raise ValueError(f"No valid data found for the specified time range ({tstart} to {tstop}).")
-
-
-    channel = data_f[0][3]
-    n_ch = len(channel)
-    spec_data = np.zeros(n_ch)
-    stat_err = np.zeros(n_ch)
-    sys_err = np.zeros(n_ch)
-    exposure = 0
-
-    for di in data_f:
-        spec_data = spec_data + di[4]
-        # stat_err = stat_err + np.sqrt(di[4])
-        # sys_err = sys_err
-        exposure = exposure + di[5]
-
-    stat_err = np.sqrt(spec_data)
-    
+def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, filter_sdd, clobber):
     # writing file
+    n_ch = len(channel)
     hdu_list = []
     primary_hdu = fits.PrimaryHDU()
                                     
@@ -107,7 +49,7 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
     tstart_dt = datetime.datetime.fromtimestamp(tstart)
     tstop_dt = datetime.datetime.fromtimestamp(tstop)
     
-    filter_sdd = hdu1[1].header['FILTER']
+    # filter_sdd = hdu1[1].header['FILTER']
     arf_file = os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}.arf')
     rmf_file = os.path.join(CALDB_BASE_DIR,'response','rmf',f'solexs_gaussian_{filter_sdd}_512.rmf')
 
@@ -191,7 +133,77 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
         
     outfile = outfile[:-3] if outfile.endswith('.pi') else outfile
     _hdu_list.writeto(f'{outfile}.pi',overwrite=clobber)
-    return f'{outfile}.pi'
+
+    return f'{outfile}.pi' 
+
+
+
+
+def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): # times in unix seconds
+
+    hdu1 = fits.open(spec_file)
+
+    if hdu1[0].header['CONTENT'] != 'Type II PHA file':
+        raise TypeError('Input File is not Type II PHA file.')
+
+    hdu=fits.BinTableHDU.from_columns(hdu1[1].columns)
+
+    data=hdu.data
+
+    time_solexs = data['TSTART']
+    
+    exposure=data['EXPOSURE']
+
+    hdu_gti = fits.open(gti_file)
+    gti_data = hdu_gti[1].data
+
+    gti_inds = np.array([False]*len(time_solexs))
+
+    for i in range(len(gti_data)):
+        row_gti_inds = (time_solexs >= gti_data['START'][i]) & (
+            time_solexs <= gti_data['STOP'][i])
+        gti_inds[row_gti_inds] = True
+
+    max_time = np.nanmax(time_solexs)
+    if tstop > max_time:
+        warnings.warn(
+            f"tstop {tstop}) is greater than the last available time in the L1 PI file ({max_time}). "
+            f"Setting tstop to {max_time}.",
+            UserWarning
+            )
+        tstop = max_time
+
+    inds = (time_solexs >= tstart) & (time_solexs <= tstop)
+
+    inds = inds & gti_inds
+
+
+    data_f = data[inds]
+
+    if len(data_f) == 0:
+        raise ValueError(f"No valid data found for the specified time range ({tstart} to {tstop}).")
+
+
+    channel = data_f[0][3]
+    n_ch = len(channel)
+    spec_data = np.zeros(n_ch)
+    stat_err = np.zeros(n_ch)
+    sys_err = np.zeros(n_ch)
+    exposure = 0
+
+    for di in data_f:
+        spec_data = spec_data + di[4]
+        # stat_err = stat_err + np.sqrt(di[4])
+        # sys_err = sys_err
+        exposure = exposure + di[5]
+
+    stat_err = np.sqrt(spec_data)
+    
+    # writing file
+    filter_sdd = hdu1[1].header['FILTER']
+    outifle = write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, filter_sdd, clobber)
+
+    return outfile
 
 
 def solexs_genspec_cli():
