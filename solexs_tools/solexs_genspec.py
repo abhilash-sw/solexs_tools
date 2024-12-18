@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-18 05:44:30 pm
+# @Last Modified time: 2024-12-18 06:25:25 pm
 #####################################################
 
 import argparse
@@ -19,6 +19,7 @@ from . import __version__
 from .caldb_config import CALDB_BASE_DIR
 from .time_utils import unix_time_to_utc
 
+QUALITY_THRESHOLD_CHANNEL = 40 #1.9801434 , 2.02778846
 
 def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, filter_sdd, outfile=None, clobber=True):
     # writing file
@@ -28,16 +29,20 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, filter_sdd,
                                     
     hdu_list.append(primary_hdu)
 
+    quality = np.where(channel <= QUALITY_THRESHOLD_CHANNEL, 1, 0)
+
     fits_columns = []
     col1 = fits.Column(name='CHANNEL',format='1J',array=channel)
     col2 = fits.Column(name='COUNTS',format='1E',array=spec_data)
     col3 = fits.Column(name='STAT_ERR',format='1E',array=stat_err)
     col4 = fits.Column(name='SYS_ERR',format='1E',array=sys_err)
+    col5 = fits.Column(name='QUALITY',format='1J',array=quality)
 
     fits_columns.append(col1)
     fits_columns.append(col2)
     fits_columns.append(col3)
     fits_columns.append(col4)
+    fits_columns.append(col5)
     
     hdu_pha = fits.BinTableHDU.from_columns(fits.ColDefs(fits_columns))
     hdu_pha.name = 'SPECTRUM'
