@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-18 05:11:59 pm
+# @Last Modified time: 2024-12-18 05:44:30 pm
 #####################################################
 
 import argparse
@@ -20,7 +20,7 @@ from .caldb_config import CALDB_BASE_DIR
 from .time_utils import unix_time_to_utc
 
 
-def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, filter_sdd, clobber):
+def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, filter_sdd, outfile=None, clobber=True):
     # writing file
     n_ch = len(channel)
     hdu_list = []
@@ -118,7 +118,7 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, filter_sdd,
         ("INSTRUME", 'SoLEXS'      , 'Name of Instrument/detector'),
         ("ORIGIN"  , 'SoLEXSPOC'       , 'Source of FITS file'),
         ("CREATOR" , f'solexs_tools-{__version__}'  , 'Creator of file'),
-        ("FILENAME", outfile            , 'Name of file'),
+        ("FILENAME", os.path.basename(outfile)            , 'Name of file'),
         ("CONTENT" , 'Type I PI file' , 'File content'),
         # ("VERSION" , __data_version__ , 'Data Product Version'),
         ("DATE", datetime.datetime.now().strftime("%Y-%m-%d"), 'Creation Date'),
@@ -208,7 +208,7 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
 
 def solexs_genspec_cli():
     # Create the parser
-    parser = argparse.ArgumentParser(description='Integrate a SoLEXS Type II PI spectrogram to produce a Type I PI spectrum file.')
+    parser = argparse.ArgumentParser(description='Integrate a SoLEXS Type II PI spectrogram to generate a Type I PI spectrum file.')
 
     # Add arguments
     parser.add_argument('-i','--infile', type=str, help='Path to the Level 1 PI spectrogram file (Type II)')
@@ -230,5 +230,119 @@ def solexs_genspec_cli():
     try:
         outfile_name = solexs_genspec(args.infile, args.tstart, args.tstop, args.gti_file, outfile=args.outfile, clobber=args.clobber)
         print(f"Output written to {outfile_name}.")
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+def solexs_genmultispec(spec_file, tstart, tstop, time_bin, gti_file, output_dir='.', clobber=True):
+    hdu1 = fits.open(spec_file)
+
+    if hdu1[0].header['CONTENT'] != 'Type II PHA file':
+        raise TypeError('Input File is not Type II PHA file.')
+
+    hdu = fits.BinTableHDU.from_columns(hdu1[1].columns)
+    data = hdu.data
+    time_solexs = data['TSTART']
+
+    hdu_gti = fits.open(gti_file)
+    gti_data = hdu_gti[1].data
+    gti_inds = np.array([False] * len(time_solexs))
+
+    for i in range(len(gti_data)):
+        row_gti_inds = (time_solexs >= gti_data['START'][i]) & (time_solexs <= gti_data['STOP'][i])
+        gti_inds[row_gti_inds] = True
+
+    max_time = np.nanmax(time_solexs)
+    if tstop > max_time:
+        warnings.warn(
+            f"tstop ({tstop}) is greater than the last available time in the L1 PI file ({max_time}). "
+            f"Setting tstop to {max_time}.",
+            UserWarning
+        )
+        tstop = max_time
+
+    pi_file_basename = os.path.basename(spec_file)
+    pi_file_basename = pi_file_basename.split('.')[0]
+
+    current_tstart = tstart
+    while current_tstart < tstop:
+        current_tstop = min(current_tstart + time_bin, tstop)
+
+        # Filter data for the current time bin and GTI
+        inds = (time_solexs >= current_tstart) & (time_solexs < current_tstop) & gti_inds
+        data_f = data[inds]
+
+        if len(data_f) == 0:
+            warnings.warn(
+                f"No valid data found for the time range ({current_tstart} to {current_tstop}). Skipping.",
+                UserWarning
+            )
+            current_tstart += time_bin
+            continue
+
+        # Combine spectral data for the current time bin
+        channel = data_f[0][3]
+        n_ch = len(channel)
+        spec_data = np.zeros(n_ch)
+        stat_err = np.zeros(n_ch)
+        sys_err = np.zeros(n_ch)
+        exposure = 0
+
+        for di in data_f:
+            spec_data = spec_data + di[4]
+            # stat_err = stat_err + np.sqrt(di[4])
+            # sys_err = sys_err
+            exposure = exposure + di[5]
+
+        stat_err = np.sqrt(spec_data)
+
+        filter_sdd = hdu1[1].header['FILTER']
+        current_tstart_dt = datetime.datetime.fromtimestamp(current_tstart)
+        current_tstop_dt = datetime.datetime.fromtimestamp(current_tstop)
+
+        outfile_name = pi_file_basename + '_' + current_tstart_dt.strftime('%H%M%S') + '_' + current_tstop_dt.strftime('%H%M%S')
+        outfile = os.path.join(output_dir,outfile_name)
+
+        write_spec(channel, spec_data, stat_err, sys_err, current_tstart, current_tstop, filter_sdd, outfile, clobber)
+
+        print(f"Generated spectrum for time range {current_tstart_dt.isoformat()} to {current_tstop.isoformat()}: {outfile}")
+
+        current_tstart += time_bin
+
+
+def solexs_genmultispec_cli():
+    # Create the parser
+    parser = argparse.ArgumentParser(description='Generate multiple spectra for a given time range and time bin size using SoLEXS Type II PI spectrogram.')
+
+    # Add arguments
+    parser.add_argument('-i','--infile', type=str, help='Path to the Level 1 PI spectrogram file (Type II)')
+    parser.add_argument('-tstart', type=float, help='Start time in Unix seconds')
+    parser.add_argument('-tstop', type=float, help='Stop time in Unix seconds')
+    parser.add_argument('-tbin', '--time_bin', type=float, help='Time bin size in seconds')
+    parser.add_argument('-gti', '--gti_file', type=str, help='Path to the Level 1 Good Time Interval File')
+    parser.add_argument('-o', '--output_dir', type=str, default='.', help='Directory to store the generated spectra')
+    parser.add_argument('-c','--clobber', type=bool, default= False, help='Overwrite existing file if it exists')
+    # Parse arguments
+    args = parser.parse_args()
+
+    tstart_utc_time_str = unix_time_to_utc(args.tstart)
+    tstop_utc_time_str = unix_time_to_utc(args.tstop)
+
+    print(f'Start Time: {tstart_utc_time_str}')
+    print(f'Stop Time: {tstop_utc_time_str}')
+    print(f'Time Bin: {args.time_bin} seconds')
+    print(f'Output Directory: {args.output_dir}')
+
+    try:
+        solexs_genmultispec(
+            spec_file=args.infile,
+            tstart=args.tstart,
+            tstop=args.tstop,
+            time_bin=args.time_bin,
+            gti_file=args.gti_file,
+            output_dir=args.output_dir,
+            clobber=args.clobber
+        )
+        print("Spectra generation completed successfully.")
     except Exception as e:
         print(f"Error: {e}")
