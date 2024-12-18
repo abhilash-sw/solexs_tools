@@ -5,7 +5,7 @@
 # @File Name: time_utils.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-11-17 11:47:59 pm
+# @Last Modified time: 2024-12-18 05:00:12 pm
 #####################################################
 
 import argparse
@@ -45,7 +45,7 @@ def utc_to_unix_time(utc_time_str):
         raise ValueError(f"Invalid UTC time format: {utc_time_str}. Error: {e}")
 
 
-def solexs_time2utc():
+def solexs_time2utc_cli():
     parser = argparse.ArgumentParser(
         description="Convert Unix timestamp to UTC in ISO 8601 format."
     )
@@ -58,7 +58,7 @@ def solexs_time2utc():
     except ValueError as e:
         print(e)
 
-def solexs_utc2time():
+def solexs_utc2time_cli():
     parser = argparse.ArgumentParser(
         description="Convert UTC in ISO 8601 format to Unix timestamp."
     )

@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-18 04:58:43 pm
+# @Last Modified time: 2024-12-18 05:00:33 pm
 #####################################################
 
 import argparse
@@ -194,7 +194,7 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
     return f'{outfile}.pi'
 
 
-def main():
+def solexs_genspec_cli():
     # Create the parser
     parser = argparse.ArgumentParser(description='Integrate a SoLEXS Type II PI spectrogram to produce a Type I PI spectrum file.')
 
