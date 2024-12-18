@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-18 01:42:43 pm
+# @Last Modified time: 2024-12-18 01:43:33 pm
 #####################################################
 
 import argparse
@@ -185,7 +185,7 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
 
     _hdu_list[0].header = primary_header
         
-
+    outfile = outfile[:-3] if outfile.endswith('.pi') else outfile
     _hdu_list.writeto(f'{outfile}.pi',overwrite=clobber)
     return f'{outfile}.pi'
 
