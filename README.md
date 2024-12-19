@@ -123,12 +123,12 @@ solexs-genmultispec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -tbin <tme_b
 - `<l1_gti_file>`: Path to the Level 1 Good Time Interval File
 
 **Options**:
-- `-o, --outfile`: Name of the output file.
-- `--clobber`: Overwrite the output file if it exists.
+- `-o, --outdir`: Name of the output directory.
+- `--clobber`: Overwrite the output files if they exist.
 
 **Example**:
 ```bash
-solexs-genspec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tstop 1707715860 -gti AL1_SOLEXS_20240212_SDD2_L1.gti.gz
+solexs-genmultispec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tstop 1707715860 -tbin 10 -gti AL1_SOLEXS_20240212_SDD2_L1.gti.gz
 ```
 
 ---
