@@ -44,31 +44,6 @@ python setup.py install
 
 ## CLI Commands
 
-### `solexs-genspec`
-Generate a type-I PI file from Level 1 PI spectrogram file (Type II) for a specified time range.
-
-**Usage**:
-```bash
-solexs-genspec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -gti <l1_gti_file> [-o <outfile>] [--clobber <True/False>]
-```
-
-**Arguments**:
-- `<l1_pi_file>`: Path to the Level 1 PI spectrogram file (Type II)
-- `<tstart>`: Start time in Unix seconds
-- `<tstop>`: Stop time in Unix seconds
-- `<l1_gti_file>`: Path to the Level 1 Good Time Interval File
-
-**Options**:
-- `-o, --outfile`: Name of the output file.
-- `--clobber`: Overwrite the output file if it exists.
-
-**Example**:
-```bash
-solexs-genspec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tstop 1707715860 -gti AL1_SOLEXS_20240212_SDD2_L1.gti.gz
-```
-
----
-
 ### `solexs-time2utc`
 Convert a Unix timestamp to UTC in ISO 8601 format.
 
@@ -103,6 +78,57 @@ solexs-utc2time <utc_time>
 ```bash
 solexs-utc2time 2024-02-12T11:00:00
 # Output: Unix Timestamp: 1707715800
+```
+
+---
+
+### `solexs-genspec`
+Generate a type-I PI file from Level 1 PI spectrogram file (Type II) for a specified time range.
+
+**Usage**:
+```bash
+solexs-genspec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -gti <l1_gti_file> [-o <outfile>] [--clobber <True/False>]
+```
+
+**Arguments**:
+- `<l1_pi_file>`: Path to the Level 1 PI spectrogram file (Type II)
+- `<tstart>`: Start time in Unix seconds
+- `<tstop>`: Stop time in Unix seconds
+- `<l1_gti_file>`: Path to the Level 1 Good Time Interval File
+
+**Options**:
+- `-o, --outfile`: Name of the output file.
+- `--clobber`: Overwrite the output file if it exists.
+
+**Example**:
+```bash
+solexs-genspec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tstop 1707715860 -gti AL1_SOLEXS_20240212_SDD2_L1.gti.gz
+```
+
+---
+
+### `solexs-genmultispec`
+Generate multiple type-I PI file from Level 1 PI spectrogram file (Type II) for a specified time range and time binning.
+
+**Usage**:
+```bash
+solexs-genmultispec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -tbin <tme_bin> -gti <l1_gti_file> [-o <outdir>] [--clobber <True/False>]
+```
+
+**Arguments**:
+- `<l1_pi_file>`: Path to the Level 1 PI spectrogram file (Type II)
+- `<tstart>`: Start time in Unix seconds
+- `<tstop>`: Stop time in Unix seconds
+- `<time_bin>`: Time bin size in seconds
+- `<l1_gti_file>`: Path to the Level 1 Good Time Interval File
+
+**Options**:
+- `-o, --outfile`: Name of the output file.
+- `--clobber`: Overwrite the output file if it exists.
+
+**Example**:
+```bash
+solexs-genspec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tstop 1707715860 -gti AL1_SOLEXS_20240212_SDD2_L1.gti.gz
 ```
 
 ---
