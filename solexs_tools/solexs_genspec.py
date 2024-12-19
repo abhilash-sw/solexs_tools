@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-19 08:47:33 am
+# @Last Modified time: 2024-12-19 11:50:07 am
 #####################################################
 
 import argparse
@@ -21,7 +21,7 @@ from .time_utils import unix_time_to_utc
 
 QUALITY_THRESHOLD_CHANNEL = 40 #1.9801434 , 2.02778846
 
-def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, filter_sdd, outfile=None, clobber=True):
+def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, clobber=True):
     # writing file
     n_ch = len(channel)
     hdu_list = []
@@ -112,10 +112,6 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, filter_sdd,
     
 
 
-    if outfile == None:
-        pi_file_basename = os.path.basename(spec_file)
-        pi_file_basename = pi_file_basename.split('.')[0]
-        outfile = pi_file_basename + '_' + tstart_dt.strftime('%H%M%S') + '_' + tstop_dt.strftime('%H%M%S')
 
     _PRIMARY_HEADER_KEYWORDS = (
         ("MISSION" , 'ADITYA L-1', 'Name of mission/satellite'),
@@ -157,7 +153,7 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
 
     time_solexs = data['TSTART']
     
-    exposure=data['EXPOSURE']
+    # exposure=data['EXPOSURE']
 
     hdu_gti = fits.open(gti_file)
     gti_data = hdu_gti[1].data
@@ -205,8 +201,16 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
     stat_err = np.sqrt(spec_data)
     
     # writing file
+    tstart_dt = datetime.datetime.fromtimestamp(tstart)
+    tstop_dt = datetime.datetime.fromtimestamp(tstop)
+
+    if outfile == None:
+        pi_file_basename = os.path.basename(spec_file)
+        pi_file_basename = pi_file_basename.split('.')[0]
+        outfile = pi_file_basename + '_' + tstart_dt.strftime('%H%M%S') + '_' + tstop_dt.strftime('%H%M%S')
+
     filter_sdd = hdu1[1].header['FILTER']
-    outifle = write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, filter_sdd, clobber)
+    outifle = write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, clobber)
 
     return outfile
 
@@ -308,9 +312,9 @@ def solexs_genmultispec(spec_file, tstart, tstop, time_bin, gti_file, output_dir
         outfile_name = pi_file_basename + '_' + current_tstart_dt.strftime('%H%M%S') + '_' + current_tstop_dt.strftime('%H%M%S')
         outfile = os.path.join(output_dir,outfile_name)
 
-        write_spec(channel, spec_data, stat_err, sys_err, current_tstart, current_tstop, filter_sdd, outfile, clobber)
+        write_spec(channel, spec_data, stat_err, sys_err, current_tstart, current_tstop, exposure, filter_sdd, outfile, clobber)
 
-        print(f"Generated spectrum for time range {current_tstart_dt.isoformat()} to {current_tstop.isoformat()}: {outfile}")
+        print(f"Generated spectrum for time range {current_tstart_dt.isoformat()} to {current_tstop_dt.isoformat()}: {outfile}")
 
         current_tstart += time_bin
 
