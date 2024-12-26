@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-19 11:50:07 am
+# @Last Modified time: 2024-12-26 06:28:53 pm
 #####################################################
 
 import argparse
@@ -19,7 +19,7 @@ from . import __version__
 from .caldb_config import CALDB_BASE_DIR
 from .time_utils import unix_time_to_utc
 
-QUALITY_THRESHOLD_CHANNEL = 40 #1.9801434 , 2.02778846
+QUALITY_THRESHOLD_CHANNEL = 56 #2.74 - 2.79
 
 def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, clobber=True):
     # writing file
