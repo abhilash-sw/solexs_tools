@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-26 06:28:53 pm
+# @Last Modified time: 2024-12-26 08:07:36 pm
 #####################################################
 
 import argparse
@@ -174,7 +174,7 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
             )
         tstop = max_time
 
-    inds = (time_solexs >= tstart) & (time_solexs <= tstop)
+    inds = (time_solexs >= tstart) & (time_solexs < tstop)
 
     inds = inds & gti_inds
 
