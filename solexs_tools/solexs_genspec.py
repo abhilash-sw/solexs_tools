@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-26 08:07:36 pm
+# @Last Modified time: 2024-12-31 02:05:33 pm
 #####################################################
 
 import argparse
@@ -173,6 +173,15 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
             UserWarning
             )
         tstop = max_time
+
+    min_time = np.nanmin(time_solexs)
+    if tstart < min_time:
+        warnings.warn(
+            f"tstart {tstart}) is less than the first available time in the L1 PI file ({min_time}). "
+            f"Setting tstart to {min_time}.",
+            UserWarning
+            )
+        tstart = min_time        
 
     inds = (time_solexs >= tstart) & (time_solexs < tstop)
 
