@@ -5,7 +5,7 @@
 # @File Name: setup.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-27 04:52:47 pm
+# @Last Modified time: 2025-01-01 02:22:15 pm
 #####################################################
 
 from setuptools import setup, find_packages
@@ -33,6 +33,7 @@ setup(
         "console_scripts": [
             "solexs-genspec=solexs_tools.solexs_genspec:solexs_genspec_cli",
             "solexs-genmultispec=solexs_tools.solexs_genspec:solexs_genmultispec_cli",
+            "solexs-genlc=solexs_tools.solexs_genlc:solexs_genlc_cli",
             "solexs-time2utc=solexs_tools.time_utils:solexs_time2utc_cli",
             "solexs-utc2time=solexs_tools.time_utils:solexs_utc2time_cli",
         ]
