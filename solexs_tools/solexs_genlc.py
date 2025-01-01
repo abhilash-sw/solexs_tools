@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-01 06:07:48 pm
+# @Last Modified time: 2025-01-01 06:27:30 pm
 #####################################################
 
 import numpy as np
@@ -141,8 +141,8 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None,clobb
     if ene_high > 22:
         raise ValueError('Higher energy limit cannot be more than 22 keV.')
 
-    ch_low = np.argmin(np.abs(ene_bins[:,0] - ene_low))
-    ch_high = np.argmin(np.abs(ene_bins[:,1] - ene_high))
+    ch_low = np.where(ene_bins[:,0]>ene_low)[0][0]
+    ch_high = np.where(ene_bins[:,1]<ene_high)[0][-1]
 
     ene_low_str = f'{ene_bins[ch_low,0]:.2f}'
     ene_high_str = f'{ene_bins[ch_high,1]:.2f}'
