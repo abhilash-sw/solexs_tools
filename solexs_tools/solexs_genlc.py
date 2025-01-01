@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-01 02:27:47 pm
+# @Last Modified time: 2025-01-01 02:48:40 pm
 #####################################################
 
 import numpy as np
@@ -15,7 +15,7 @@ from . import __version__
 from .caldb_config import CALDB_BASE_DIR
 
 
-def write_lc(time_data,lc_data,filter_sdd,outfile,clobber=True):
+def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, clobber=True):
     hdu_list = []
     primary_hdu = fits.PrimaryHDU()
                                     
@@ -37,7 +37,7 @@ def write_lc(time_data,lc_data,filter_sdd,outfile,clobber=True):
 
     hdu_lc.header['TSTART'] = time_data[0]
     hdu_lc.header['TSTOP'] = time_data[-1]
-    hdu_lc.header['TIMEDEL'] = 1 #second
+    hdu_lc.header['TIMEDEL'] = str(time_bin) #second
     hdu_lc.header['TIMZERO'] = 0
     hdu_lc.header['MJDREFI'] = 40587 # MJD REF of 1970-01-01 05:30:00
     hdu_lc.header['MJDREFF'] = 0.22916666651
@@ -101,8 +101,27 @@ def write_lc(time_data,lc_data,filter_sdd,outfile,clobber=True):
 
     return f'{outfile}.lc'
 
+def rebin_lc(lc_data, time_arr ,rebin_sec): #
+    """lc_data: has to be counts per second"""
+    extra_bins = len(lc_data) % rebin_sec
+    if extra_bins != 0:
+        lc_data = lc_data[:-extra_bins]
+    new_bins = int(len(lc_data)/rebin_sec)
+    new_lc_data = lc_data.reshape((new_bins, rebin_sec)).sum(axis=1)
+    new_tm = np.arange(new_bins)*rebin_sec
 
-def solexs_genlc(spec_file,ene_low,ene_high,outfile=None,clobber=True):
+
+    new_time_arr = []
+    for ii in new_tm:
+        new_time_arr.append(time_arr[int(ii)])
+
+    new_lc_data = new_lc_data/rebin_sec #counts per second
+    new_time_arr = np.array(new_time_arr) + rebin_sec/2
+
+    return new_lc_data, new_time_arr
+
+
+def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None,clobber=True):
     hdu1 = fits.open(spec_file)
 
     if hdu1[0].header['CONTENT'] != 'Type II PHA file':
@@ -130,12 +149,17 @@ def solexs_genlc(spec_file,ene_low,ene_high,outfile=None,clobber=True):
 
     lc_data = data['COUNTS'][:,ch_low:ch_high].sum(axis=1)
 
+    if time_bin:
+        lc_data, time_solexs = rebin_lc(lc_data,time_solexs,time_bin)
+    else:
+        time_bin = 1
+
     if outfile == None:
         pi_file_basename = os.path.basename(spec_file)
         pi_file_basename = pi_file_basename.split('.')[0]
         outfile = f'{pi_file_basename}_{ene_low_str}_{ene_high_str}keV.lc'
 
-    outfile = write_lc(time_solexs,lc_data,filter_sdd,outfile,clobber)
+    outfile = write_lc(time_solexs,lc_data, time_bin, filter_sdd,outfile,clobber)
 
     return outfile
 
@@ -148,6 +172,7 @@ def solexs_genlc_cli():
     parser.add_argument('-i','--infile', type=str, help='Path to the Level 1 PI spectrogram file (Type II)')
     parser.add_argument('-elo','--ene_low', type=float, help='Lower energy limit in keV')
     parser.add_argument('-ehi','--ene_high', type=float, help='Higher energy limit in keV')
+    parser.add_argument('-tbin', '--time_bin', type=float, help='Time bin size in seconds', default=None)
     parser.add_argument('-o','--outfile', type=str, help='Output file name (optional)', default=None)
     parser.add_argument('-c','--clobber', type=bool, default= False, help='Overwrite existing file if it exists')
 
@@ -155,7 +180,7 @@ def solexs_genlc_cli():
     args = parser.parse_args()
 
     try:
-        outfile_name = solexs_genlc(args.infile, args.ene_low, args.ene_high, outfile=args.outfile, clobber=args.clobber)
+        outfile_name = solexs_genlc(args.infile, args.ene_low, args.ene_high, args.time_bin, outfile=args.outfile, clobber=args.clobber)
         print(f"Output written to {outfile_name}.")
     except Exception as e:
         print(f"Error: {e}")
