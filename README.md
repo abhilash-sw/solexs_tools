@@ -144,7 +144,7 @@ solexs-genlc -i <l1_pi_file> -elo <ene_low> -ehi <ene_high> [-tbin <time_bin>] [
 **Arguments**:
 - `<l1_pi_file>`: Path to the Level 1 PI spectrogram file (Type II)
 - `<ene_low>`: Lower energy limit in keV
-- `<ene_high>`: Hihger energy limit in keV
+- `<ene_high>`: Higher energy limit in keV
 
 **Options**:
 - `<time_bin>`: Time bin size in seconds (Default set to one second)
