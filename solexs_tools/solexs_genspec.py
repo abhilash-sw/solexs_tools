@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-01 02:13:37 pm
+# @Last Modified time: 2025-01-01 02:34:37 pm
 #####################################################
 
 import argparse
@@ -226,7 +226,7 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
 
 def solexs_genspec_cli():
     # Create the parser
-    parser = argparse.ArgumentParser(description='Integrate a SoLEXS Type II PI spectrogram to generate a Type I PI spectrum file.')
+    parser = argparse.ArgumentParser(description='Generate a type-I PI file from Level 1 PI spectrogram file (Type II) for a specified time range.')
 
     # Add arguments
     parser.add_argument('-i','--infile', type=str, help='Path to the Level 1 PI spectrogram file (Type II)')
@@ -330,7 +330,7 @@ def solexs_genmultispec(spec_file, tstart, tstop, time_bin, gti_file, output_dir
 
 def solexs_genmultispec_cli():
     # Create the parser
-    parser = argparse.ArgumentParser(description='Generate multiple spectra for a given time range and time bin size using SoLEXS Type II PI spectrogram.')
+    parser = argparse.ArgumentParser(description='Generate multiple type-I PI file from Level 1 PI spectrogram file (Type II) for a specified time range and time binning.')
 
     # Add arguments
     parser.add_argument('-i','--infile', type=str, help='Path to the Level 1 PI spectrogram file (Type II)')
