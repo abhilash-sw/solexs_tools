@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-31 02:05:33 pm
+# @Last Modified time: 2025-01-01 02:13:37 pm
 #####################################################
 
 import argparse
@@ -219,7 +219,7 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
         outfile = pi_file_basename + '_' + tstart_dt.strftime('%H%M%S') + '_' + tstop_dt.strftime('%H%M%S')
 
     filter_sdd = hdu1[1].header['FILTER']
-    outifle = write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, clobber)
+    outfile = write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, clobber)
 
     return outfile
 
