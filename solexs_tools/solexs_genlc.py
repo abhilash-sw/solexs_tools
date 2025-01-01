@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-01 02:48:40 pm
+# @Last Modified time: 2025-01-01 06:07:48 pm
 #####################################################
 
 import numpy as np
@@ -132,7 +132,7 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None,clobb
     time_solexs = data['TSTART']
 
     filter_sdd = hdu1[1].header['FILTER']
-    ene_bins_file = os.path.join(CALDB_BASE_DIR,'ebounds',f'energy_bins_out_SDD{filter_sdd}.dat')
+    ene_bins_file = os.path.join(CALDB_BASE_DIR,'ebounds',f'energy_bins_out_{filter_sdd}.dat')
     ene_bins = np.loadtxt(ene_bins_file)
 
     if ene_low < 2:
