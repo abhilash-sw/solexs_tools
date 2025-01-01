@@ -53,7 +53,7 @@ solexs-time2utc <unix_time>
 ```
 
 **Arguments**:
-- `<unix_time>`: Unix timestamp to convert.
+- `<unix_time>`: Unix timestamp to convert
 
 **Example**:
 ```bash
@@ -72,7 +72,7 @@ solexs-utc2time <utc_time>
 ```
 
 **Arguments**:
-- `<utc_time>`: UTC time in ISO 8601 format.
+- `<utc_time>`: UTC time in ISO 8601 format
 
 **Example**:
 ```bash
@@ -97,8 +97,8 @@ solexs-genspec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -gti <l1_gti_file
 - `<l1_gti_file>`: Path to the Level 1 Good Time Interval File
 
 **Options**:
-- `-o, --outfile`: Name of the output file.
-- `--clobber`: Overwrite the output file if it exists.
+- `-o, --outfile`: Name of the output file
+- `--clobber`: Overwrite the output file if it exists
 
 **Example**:
 ```bash
@@ -123,8 +123,8 @@ solexs-genmultispec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -tbin <tme_b
 - `<l1_gti_file>`: Path to the Level 1 Good Time Interval File
 
 **Options**:
-- `-o, --outdir`: Name of the output directory.
-- `--clobber`: Overwrite the output files if they exist.
+- `-o, --outdir`: Name of the output directory
+- `--clobber`: Overwrite the output files if they exist
 
 **Example**:
 ```bash
@@ -138,7 +138,7 @@ Generate a light curve file from Level 1 PI spectrogram file (Type II) for a spe
 
 **Usage**:
 ```bash
-solexs-genlc -i <l1_pi_file> -elo <ene_low> -ehi <ene_high> [-o <outfile>] [--clobber <True/False>]
+solexs-genlc -i <l1_pi_file> -elo <ene_low> -ehi <ene_high> [-tbin <time_bin>] [-o <outfile>] [--clobber <True/False>]
 ```
 
 **Arguments**:
@@ -147,8 +147,9 @@ solexs-genlc -i <l1_pi_file> -elo <ene_low> -ehi <ene_high> [-o <outfile>] [--cl
 - `<ene_high>`: Hihger energy limit in keV
 
 **Options**:
-- `-o, --outfile`: Name of the output file.
-- `--clobber`: Overwrite the output file if it exists.
+- `<time_bin>`: Time bin size in seconds (Default set to one second)
+- `-o, --outfile`: Name of the output file
+- `--clobber`: Overwrite the output file if it exists
 
 **Example**:
 ```bash
