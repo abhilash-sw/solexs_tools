@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-02 10:25:11 am
+# @Last Modified time: 2025-01-02 10:58:53 am
 #####################################################
 
 import numpy as np
@@ -106,7 +106,7 @@ def rebin_lc(lc_data, time_arr ,rebin_sec): #
     if type(rebin_sec)!=int:
         raise TypeError("Cannot do fractional time binning.")
 
-    if type(rebin_sec)<1:
+    if rebin_sec<1:
         raise ValueError("Time binning cannot be less than 1 second.")
 
     extra_bins = len(lc_data) % rebin_sec
@@ -163,7 +163,7 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None,clobb
     if outfile == None:
         pi_file_basename = os.path.basename(spec_file)
         pi_file_basename = pi_file_basename.split('.')[0]
-        outfile = f'{pi_file_basename}_{ene_low_str}_{ene_high_str}keV.lc'
+        outfile = f'{pi_file_basename}_{ene_low_str}_{ene_high_str}keV_{time_bin}sec.lc'
 
     outfile = write_lc(time_solexs,lc_data, time_bin, filter_sdd,outfile,clobber)
 
