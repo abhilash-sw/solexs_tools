@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-02 11:06:02 am
+# @Last Modified time: 2025-01-02 05:07:47 pm
 #####################################################
 
 import numpy as np
@@ -128,6 +128,10 @@ def rebin_lc(lc_data, time_arr ,rebin_sec): #
 
 
 def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None,clobber=True):
+    if ene_high <= ene_low:
+        raise ValueError(f'Higher energy limit {ene_high} is less than lower energy limit {ene_low}.')
+
+
     hdu1 = fits.open(spec_file)
 
     if hdu1[0].header['CONTENT'] != 'Type II PHA file':
