@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-01 06:27:30 pm
+# @Last Modified time: 2025-01-02 10:25:11 am
 #####################################################
 
 import numpy as np
@@ -103,6 +103,12 @@ def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, clobber=True):
 
 def rebin_lc(lc_data, time_arr ,rebin_sec): #
     """lc_data: has to be counts per second"""
+    if type(rebin_sec)!=int:
+        raise TypeError("Cannot do fractional time binning.")
+
+    if type(rebin_sec)<1:
+        raise ValueError("Time binning cannot be less than 1 second.")
+
     extra_bins = len(lc_data) % rebin_sec
     if extra_bins != 0:
         lc_data = lc_data[:-extra_bins]
@@ -172,7 +178,7 @@ def solexs_genlc_cli():
     parser.add_argument('-i','--infile', type=str, help='Path to the Level 1 PI spectrogram file (Type II)')
     parser.add_argument('-elo','--ene_low', type=float, help='Lower energy limit in keV')
     parser.add_argument('-ehi','--ene_high', type=float, help='Higher energy limit in keV')
-    parser.add_argument('-tbin', '--time_bin', type=float, help='Time bin size in seconds', default=None)
+    parser.add_argument('-tbin', '--time_bin', type=int, help='Time bin size in seconds', default=None)
     parser.add_argument('-o','--outfile', type=str, help='Output file name (optional)', default=None)
     parser.add_argument('-c','--clobber', type=bool, default= False, help='Overwrite existing file if it exists')
 
