@@ -1,5 +1,5 @@
 # SoLEXS_Tools
-**SoLEXS_Tools** is a Python package developed to facilitate the processing and preparation of data from the **SoLEXS** (Solar Low Energy X-ray Spectrometer) instrument on the **Aditya-L1** mission. It provides essential tools and utilities generating and managing spectral data and calibration files, enabling users to perform spectral analysis using specialized tools such as **XSPEC** or **Sherpa**. The package includes SoLEXS calibration database (**CALDB**), which provides essential calibration files such as Auxiliary Response Files (**ARF**) and Redistribution Matrix Files (**RMF**).
+**SoLEXS_Tools** is a Python package developed to facilitate the processing and preparation of data from the **SoLEXS** (Solar Low Energy X-ray Spectrometer) instrument on the **Aditya-L1** mission. It provides essential tools and utilities generating and managing spectral data and calibration files, enabling users to perform spectral analysis using specialized tools such as **XSPEC** or **Sherpa**. The package includes SoLEXS calibration database (**CALDB**), which provides essential calibration files such as Auxiliary Response File (**ARF**) and Redistribution Matrix File (**RMF**).
 ---
 
 ## Requirements
@@ -98,7 +98,7 @@ solexs-genlc -i <l1_pi_file> -elo <ene_low> -ehi <ene_high> [-tbin <time_bin>] [
 **Options**:
 - `<time_bin>`: Time bin size in seconds (Default set to one second)
 - `-o, --outfile`: Name of the output file
-- `--clobber`: Overwrite the output file if it exists
+- `-c, --clobber`: Overwrite the output file if it exists
 
 **Example**:
 ```bash
@@ -123,7 +123,7 @@ solexs-genspec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -gti <l1_gti_file
 
 **Options**:
 - `-o, --outfile`: Name of the output file
-- `--clobber`: Overwrite the output file if it exists
+- `-c, --clobber`: Overwrite the output file if it exists
 
 **Example**:
 ```bash
@@ -137,7 +137,7 @@ Generate multiple type-I PI spectral files from Level 1 PI spectrogram file (Typ
 
 **Usage**:
 ```bash
-solexs-genmultispec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -tbin <tme_bin> -gti <l1_gti_file> [-o <outdir>] [--clobber <True/False>]
+solexs-genmultispec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -tbin <time_bin> -gti <l1_gti_file> [-o <outdir>] [--clobber <True/False>]
 ```
 
 **Arguments**:
@@ -149,7 +149,7 @@ solexs-genmultispec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -tbin <tme_b
 
 **Options**:
 - `-o, --outdir`: Name of the output directory
-- `--clobber`: Overwrite the output files if they exist
+- `-c, --clobber`: Overwrite the output file if it exists
 
 **Example**:
 ```bash
