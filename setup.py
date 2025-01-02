@@ -5,7 +5,7 @@
 # @File Name: setup.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-02 04:04:30 pm
+# @Last Modified time: 2025-01-02 06:26:17 pm
 #####################################################
 
 from setuptools import setup, find_packages
@@ -13,7 +13,7 @@ import os
 
 setup(
     name="solexs_tools",
-    version="0.94",
+    version="1.0",
     description="A toolkit for SoLEXS data analysis",
     author="SoLEXSPOC",
     author_email="sarwade@ursc.gov.in",
@@ -21,7 +21,7 @@ setup(
     package_data={
         # Include all files in CALDB
         "solexs_tools": [
-            "CALDB/aditya-l1/solexs/data/cpf/*/*/*"
+            "CALDB/*/*"
         ],
     },
     include_package_data=True,  # Ensures package_data is included
