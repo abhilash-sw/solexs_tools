@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-01 02:34:37 pm
+# @Last Modified time: 2025-01-02 11:05:35 am
 #####################################################
 
 import argparse
@@ -15,7 +15,7 @@ import numpy as np
 import os
 import warnings
 
-from . import __version__
+from . import __version__, __caldb_version__
 from .caldb_config import CALDB_BASE_DIR
 from .time_utils import unix_time_to_utc
 
@@ -55,8 +55,8 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
     tstop_dt = datetime.datetime.fromtimestamp(tstop)
     
     # filter_sdd = hdu1[1].header['FILTER']
-    arf_file = os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}.arf')
-    rmf_file = os.path.join(CALDB_BASE_DIR,'response','rmf',f'solexs_gaussian_{filter_sdd}_340.rmf')
+    arf_file = os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}_v{__caldb_version__}.arf')
+    rmf_file = os.path.join(CALDB_BASE_DIR,'response','rmf',f'solexs_gaussian_{filter_sdd}_v{__caldb_version__}.rmf')
 
     print(f'ARF: {arf_file}')
     print(f'RMF: {rmf_file}')

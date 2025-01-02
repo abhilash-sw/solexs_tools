@@ -5,13 +5,13 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-02 10:58:53 am
+# @Last Modified time: 2025-01-02 11:06:02 am
 #####################################################
 
 import numpy as np
 from astropy.io import fits
 import datetime, os, argparse
-from . import __version__
+from . import __version__, __caldb_version__
 from .caldb_config import CALDB_BASE_DIR
 
 
@@ -138,7 +138,7 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None,clobb
     time_solexs = data['TSTART']
 
     filter_sdd = hdu1[1].header['FILTER']
-    ene_bins_file = os.path.join(CALDB_BASE_DIR,'ebounds',f'energy_bins_out_{filter_sdd}.dat')
+    ene_bins_file = os.path.join(CALDB_BASE_DIR,'ebounds',f'energy_bins_out_{filter_sdd}_v{__caldb_version__}.dat')
     ene_bins = np.loadtxt(ene_bins_file)
 
     if ene_low < 2:
