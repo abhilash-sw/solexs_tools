@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-02 11:05:35 am
+# @Last Modified time: 2025-01-02 11:18:08 am
 #####################################################
 
 import argparse
@@ -98,7 +98,7 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
         ("BACKSCAL", 1.0, ""),
         ("SYS_ERR", 1, "Systematic error to be applied"),
 #         ("QUALITY", 0, "Data quality flag"),
-        ("GROUPING", 1, "Whether data is grouped"),
+        ("GROUPING", 0, "Whether data is grouped"),
         ("TLMIN", 0, "Minimum legal value for 'CHANNEL' column"),
         ("TLMAX", n_ch-1, "Maximum legal value for 'CHANNEL' column"),
     )
