@@ -82,6 +82,31 @@ solexs-utc2time 2024-02-12T11:00:00
 
 ---
 
+### `solexs-genlc`
+Generate a light curve file from Level 1 PI spectrogram file (Type II) for a specified energy range.
+
+**Usage**:
+```bash
+solexs-genlc -i <l1_pi_file> -elo <ene_low> -ehi <ene_high> [-tbin <time_bin>] [-o <outfile>] [--clobber <True/False>]
+```
+
+**Arguments**:
+- `<l1_pi_file>`: Path to the Level 1 PI spectrogram file (Type II)
+- `<ene_low>`: Lower energy limit in keV
+- `<ene_high>`: Higher energy limit in keV
+
+**Options**:
+- `<time_bin>`: Time bin size in seconds (Default set to one second)
+- `-o, --outfile`: Name of the output file
+- `--clobber`: Overwrite the output file if it exists
+
+**Example**:
+```bash
+solexs-genlc -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -elo 3 -ehi 10
+```
+
+---
+
 ### `solexs-genspec`
 Generate a type-I PI file from Level 1 PI spectrogram file (Type II) for a specified time range.
 
@@ -133,30 +158,6 @@ solexs-genmultispec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tst
 
 ---
 
-### `solexs-genlc`
-Generate a light curve file from Level 1 PI spectrogram file (Type II) for a specified energy range.
-
-**Usage**:
-```bash
-solexs-genlc -i <l1_pi_file> -elo <ene_low> -ehi <ene_high> [-tbin <time_bin>] [-o <outfile>] [--clobber <True/False>]
-```
-
-**Arguments**:
-- `<l1_pi_file>`: Path to the Level 1 PI spectrogram file (Type II)
-- `<ene_low>`: Lower energy limit in keV
-- `<ene_high>`: Higher energy limit in keV
-
-**Options**:
-- `<time_bin>`: Time bin size in seconds (Default set to one second)
-- `-o, --outfile`: Name of the output file
-- `--clobber`: Overwrite the output file if it exists
-
-**Example**:
-```bash
-solexs-genlc -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -elo 3 -ehi 10
-```
-
----
 
 ## Configuration
 
