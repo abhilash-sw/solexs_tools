@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-02 11:18:08 am
+# @Last Modified time: 2025-01-02 11:41:56 am
 #####################################################
 
 import argparse
@@ -183,6 +183,13 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
             )
         tstart = min_time        
 
+    tstart_utc_time_str = unix_time_to_utc(tstart)
+    tstop_utc_time_str = unix_time_to_utc(tstop)
+
+    print(f'Start Time: {tstart_utc_time_str}')
+    print(f'Stop Time: {tstop_utc_time_str}')
+
+
     inds = (time_solexs >= tstart) & (time_solexs < tstop)
 
     inds = inds & gti_inds
@@ -239,11 +246,6 @@ def solexs_genspec_cli():
     # Parse arguments
     args = parser.parse_args()
 
-    tstart_utc_time_str = unix_time_to_utc(args.tstart)
-    tstop_utc_time_str = unix_time_to_utc(args.tstop)
-
-    print(f'Start Time: {tstart_utc_time_str}')
-    print(f'Stop Time: {tstop_utc_time_str}')
 
     try:
         outfile_name = solexs_genspec(args.infile, args.tstart, args.tstop, args.gti_file, outfile=args.outfile, clobber=args.clobber)
