@@ -108,7 +108,7 @@ solexs-genlc -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -elo 3 -ehi 10
 ---
 
 ### `solexs-genspec`
-Generate a type-I PI file from Level 1 PI spectrogram file (Type II) for a specified time range.
+Generate a type-I PI spectral file from Level 1 PI spectrogram file (Type II) for a specified time range.
 
 **Usage**:
 ```bash
@@ -133,7 +133,7 @@ solexs-genspec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tstop 17
 ---
 
 ### `solexs-genmultispec`
-Generate multiple type-I PI file from Level 1 PI spectrogram file (Type II) for a specified time range and time binning.
+Generate multiple type-I PI spectral files from Level 1 PI spectrogram file (Type II) for a specified time range and time binning.
 
 **Usage**:
 ```bash
