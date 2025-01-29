@@ -5,7 +5,7 @@
 # @File Name: setup.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-02 06:26:17 pm
+# @Last Modified time: 2025-01-29 04:47:16 pm
 #####################################################
 
 from setuptools import setup, find_packages
@@ -13,7 +13,7 @@ import os
 
 setup(
     name="solexs_tools",
-    version="1.0",
+    version="1.1",
     description="A toolkit for SoLEXS data analysis",
     author="SoLEXSPOC",
     author_email="sarwade@ursc.gov.in",

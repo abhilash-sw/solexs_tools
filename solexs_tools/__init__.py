@@ -5,8 +5,8 @@
 # @File Name: __init__.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-02 06:00:53 pm
+# @Last Modified time: 2025-01-29 04:47:24 pm
 #####################################################
 
-__version__ = 1.0
+__version__ = 1.1
 __caldb_version__ = 1
