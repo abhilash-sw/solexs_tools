@@ -5,11 +5,11 @@
 # @File Name: time_utils.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2024-12-18 05:00:12 pm
+# @Last Modified time: 2025-01-29 04:55:06 pm
 #####################################################
 
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone
 
 def unix_time_to_utc(unix_time):
     """
@@ -22,7 +22,7 @@ def unix_time_to_utc(unix_time):
         str: UTC time in ISO 8601 format.
     """
     try:
-        dt = datetime.fromtimestamp(unix_time)
+        dt = datetime.fromtimestamp(unix_time, timezone.utc)
         return dt.isoformat()
     except Exception as e:
         raise ValueError(f"Invalid Unix time: {unix_time}. Error: {e}")
@@ -39,7 +39,7 @@ def utc_to_unix_time(utc_time_str):
         int: Unix timestamp.
     """
     try:
-        dt = datetime.fromisoformat(utc_time_str)
+        dt = datetime.fromisoformat(utc_time_str + '+00:00' )
         return int(dt.timestamp())
     except Exception as e:
         raise ValueError(f"Invalid UTC time format: {utc_time_str}. Error: {e}")
