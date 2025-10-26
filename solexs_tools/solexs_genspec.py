@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-02 02:51:01 pm
+# @Last Modified time: 2025-10-26 07:07:28 pm
 #####################################################
 
 import argparse
@@ -16,8 +16,10 @@ import os
 import warnings
 
 from . import __version__, __caldb_version__
-from .caldb_config import CALDB_BASE_DIR
 from .time_utils import unix_time_to_utc
+from .caldb_utils import get_caldb_base_dir
+
+CALDB_BASE_DIR = get_caldb_base_dir()
 
 QUALITY_THRESHOLD_CHANNEL = 56 #2.74 - 2.79
 

@@ -5,14 +5,16 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-02 05:07:47 pm
+# @Last Modified time: 2025-10-26 07:07:06 pm
 #####################################################
 
 import numpy as np
 from astropy.io import fits
 import datetime, os, argparse
 from . import __version__, __caldb_version__
-from .caldb_config import CALDB_BASE_DIR
+from .caldb_utils import get_caldb_base_dir
+
+CALDB_BASE_DIR = get_caldb_base_dir()
 
 
 def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, clobber=True):
