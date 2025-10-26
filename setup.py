@@ -5,7 +5,7 @@
 # @File Name: setup.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-29 04:47:16 pm
+# @Last Modified time: 2025-10-26 06:48:34 pm
 #####################################################
 
 from setuptools import setup, find_packages
@@ -18,12 +18,12 @@ setup(
     author="SoLEXSPOC",
     author_email="sarwade@ursc.gov.in",
     packages=find_packages(),
-    package_data={
-        # Include all files in CALDB
-        "solexs_tools": [
-            "CALDB/*/*"
-        ],
-    },
+    # package_data={
+    #     # Include all files in CALDB
+    #     "solexs_tools": [
+    #         "CALDB/*/*"
+    #     ],
+    # },
     include_package_data=True,  # Ensures package_data is included
     install_requires=[
         "numpy",
@@ -36,6 +36,7 @@ setup(
             "solexs-genlc=solexs_tools.solexs_genlc:solexs_genlc_cli",
             "solexs-time2utc=solexs_tools.time_utils:solexs_time2utc_cli",
             "solexs-utc2time=solexs_tools.time_utils:solexs_utc2time_cli",
+            "solexs-caldb-extract=solexs_tools.caldb_utils:solexs_caldb_extract_cli",
         ]
     },
     classifiers=[
@@ -45,9 +46,3 @@ setup(
     ],
     python_requires=">=3.6",
 )
-
-# Write CALDB base directory to a config file
-caldb_base = os.path.abspath(os.path.join(os.path.dirname(__file__), "CALDB"))
-config_file = os.path.join("solexs_tools", "caldb_config.py")
-with open(config_file, "w") as f:
-    f.write(f"CALDB_BASE_DIR = '{caldb_base}'\n")
