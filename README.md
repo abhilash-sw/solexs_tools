@@ -177,18 +177,5 @@ solexs-genmultispec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tst
 ---
 
 
-## Configuration
-
-The package automatically generates a configuration file, `caldb_config.py`, that defines the path to the directory for calibration data.
-
-**Example**:
-```python
-from solexs_tools.caldb_config import CALDB_BASE_DIR
-
-print(f"CALDB Base Directory: {CALDB_BASE_DIR}")
-```
-
----
-
 ## Example Jupyter Notebook
 The package includes an example notebook that demonstrates how to perform spectral fitting of SoLEXS data using XSPEC.
