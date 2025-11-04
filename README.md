@@ -34,13 +34,31 @@ Before installing **SoLEXS_Tools**, ensure that the following dependencies are m
    An alternative Python-based spectral fitting and analysis tool available [here](https://sherpa.readthedocs.io).
 ---
 
-## Installation
+## Installation and Setup
+Installation is a two-step process. You must first install the package and then run the CALDB setup script.
+
+### Step 1: Install the Package
+Download the solexs_tools-m.n.tar.gz file and run the following commands:
+
 ```bash
 tar xvf solexs_tools-m.n.tar.gz
 cd solexs_tools
 python setup.py build
 python setup.py install
 ```
+
+### Step 2: CALDB Setup (Mandatory)
+The solexs_tools package requires a local, unzipped copy of the Calibration Database (CALDB) to function. The tools find this database using an environment variable called SOLEXS_CALDB.
+
+You must perform this setup once after installation.
+1. Extract the CALDB:
+Run the following command to extract the CALDB included with the package to a permanent location on your system
+```bash
+solexs-caldb-extract ~/solexs_caldb
+```
+
+2. Set the Environment Variable:
+Set up the SOLEXS_CALDB environment variable by adding following line to the shell's startup file (e.g. ~/.bashrc).
 
 ## CLI Commands
 
@@ -158,19 +176,6 @@ solexs-genmultispec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tst
 
 ---
 
-
-## Configuration
-
-The package automatically generates a configuration file, `caldb_config.py`, that defines the path to the directory for calibration data.
-
-**Example**:
-```python
-from solexs_tools.caldb_config import CALDB_BASE_DIR
-
-print(f"CALDB Base Directory: {CALDB_BASE_DIR}")
-```
-
----
 
 ## Example Jupyter Notebook
 The package includes an example notebook that demonstrates how to perform spectral fitting of SoLEXS data using XSPEC.
