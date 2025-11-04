@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-01-02 02:51:01 pm
+# @Last Modified time: 2025-11-04 02:30:36 pm
 #####################################################
 
 import argparse
@@ -217,8 +217,8 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
     stat_err = np.sqrt(spec_data)
     
     # writing file
-    tstart_dt = datetime.datetime.fromtimestamp(tstart)
-    tstop_dt = datetime.datetime.fromtimestamp(tstop)
+    tstart_dt = datetime.datetime.fromtimestamp(tstart, datetime.timezone.utc)
+    tstop_dt = datetime.datetime.fromtimestamp(tstop, datetime.timezone.utc)
 
     if outfile == None:
         pi_file_basename = os.path.basename(spec_file)
@@ -317,8 +317,8 @@ def solexs_genmultispec(spec_file, tstart, tstop, time_bin, gti_file, output_dir
         stat_err = np.sqrt(spec_data)
 
         filter_sdd = hdu1[1].header['FILTER']
-        current_tstart_dt = datetime.datetime.fromtimestamp(current_tstart)
-        current_tstop_dt = datetime.datetime.fromtimestamp(current_tstop)
+        current_tstart_dt = datetime.datetime.fromtimestamp(current_tstart, datetime.timezone.utc)
+        current_tstop_dt = datetime.datetime.fromtimestamp(current_tstop, datetime.timezone.utc)
 
         outfile_name = pi_file_basename + '_' + current_tstart_dt.strftime('%H%M%S') + '_' + current_tstop_dt.strftime('%H%M%S')
         outfile = os.path.join(output_dir,outfile_name)
