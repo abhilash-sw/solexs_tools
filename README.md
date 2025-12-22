@@ -1,6 +1,6 @@
 # SoLEXS_Tools
-**SoLEXS_Tools** is a Python package developed to facilitate the processing and preparation of data from the **SoLEXS** (Solar Low Energy X-ray Spectrometer) instrument on the **Aditya-L1** mission. It provides essential tools and utilities generating and managing spectral data and calibration files, enabling users to perform spectral analysis using specialized tools such as **XSPEC** or **Sherpa**. The package includes SoLEXS calibration database (**CALDB**), which provides essential calibration files such as Auxiliary Response File (**ARF**) and Redistribution Matrix File (**RMF**).
----
+SoLEXS_Tools is a Python package developed to facilitate the processing and preparation of data from the SoLEXS (Solar Low Energy X-ray Spectrometer) instrument on the Aditya-L1 mission. It provides essential tools and utilities generating and managing spectral data and calibration files, enabling users to perform spectral analysis using specialized tools such as XSPEC or Sherpa. The package includes SoLEXS calibration database (CALDB), which provides essential calibration files such as Auxiliary Response File (ARF) and Redistribution Matrix File (RMF).
+
 
 ## Requirements
 
