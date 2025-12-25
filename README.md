@@ -59,6 +59,9 @@ solexs-caldb-extract ~/solexs_caldb
 
 2. Set the Environment Variable:
 Set up the SOLEXS_CALDB environment variable by adding following line to the shell's startup file (e.g. ~/.bashrc).
+```
+export SOLEXS_CALDB='~/solexs_caldb'
+```
 
 ## CLI Commands
 
