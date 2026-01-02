@@ -5,7 +5,7 @@
 # @File Name: deadtime.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-02 05:07:30 pm
+# @Last Modified time: 2026-01-02 05:14:50 pm
 #####################################################
 
 import os, argparse
@@ -72,7 +72,7 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
         base, ext = os.path.splitext(pi_file)
         output_file = f"{base}_dt_corr{ext}"
 
-    hdu1.writeto(output_file,overwrite=clobber)
+    hdu1.writeto(output_file,overwrite=clobber,checksum=True)
 
 
 def solexs_deadtime_correction_cli():
