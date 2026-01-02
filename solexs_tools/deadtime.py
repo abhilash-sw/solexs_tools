@@ -5,7 +5,7 @@
 # @File Name: deadtime.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-02 05:14:50 pm
+# @Last Modified time: 2026-01-02 05:18:09 pm
 #####################################################
 
 import os, argparse
@@ -58,6 +58,7 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
 
     corr_factor = (fast_cr - offset_cr) / slow_cr
     new_exposures = 1/corr_factor
+    new_exposures = np.clip(new_exposures,0,1)
     
 
     data = hdu1[1].data
