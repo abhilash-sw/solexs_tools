@@ -5,7 +5,7 @@
 # @File Name: deadtime.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-02 03:43:00 pm
+# @Last Modified time: 2026-01-02 04:27:12 pm
 #####################################################
 
 import os, argparse
@@ -85,4 +85,8 @@ def solexs_deadtime_correction_cli():
 
     args = parser.parse_args()
 
-    apply_deadtime_correction(args.infile, args.hkfile, args.outfile, args.clobber)
+    try:
+        apply_deadtime_correction(args.infile, args.hkfile, args.outfile, args.clobber)
+    except Exception as e:
+        print(f"Error: {e}")
+        exit(1)
