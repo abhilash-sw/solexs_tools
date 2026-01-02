@@ -5,7 +5,7 @@
 # @File Name: setup.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-10-26 06:48:34 pm
+# @Last Modified time: 2026-01-02 04:32:34 pm
 #####################################################
 
 from setuptools import setup, find_packages
@@ -37,6 +37,7 @@ setup(
             "solexs-time2utc=solexs_tools.time_utils:solexs_time2utc_cli",
             "solexs-utc2time=solexs_tools.time_utils:solexs_utc2time_cli",
             "solexs-caldb-extract=solexs_tools.caldb_utils:solexs_caldb_extract_cli",
+            "solexs-dtcorr=solexs_tools.deadtime:solexs_deadtime_correction_cli",
         ]
     },
     classifiers=[
