@@ -5,7 +5,7 @@
 # @File Name: deadtime.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-02 05:23:59 pm
+# @Last Modified time: 2026-01-02 05:27:59 pm
 #####################################################
 
 import os, argparse
@@ -72,6 +72,8 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
 
     hdu1.writeto(output_file,overwrite=clobber,checksum=True)
 
+    return output_file
+
 
 def solexs_deadtime_correction_cli():
     parser = argparse.ArgumentParser(description="Apply Deadtime Correction to Level 1 PI spectrogram file (Type II)")
@@ -84,8 +86,8 @@ def solexs_deadtime_correction_cli():
     args = parser.parse_args()
 
     try:
-        apply_deadtime_correction(args.infile, args.hkfile, args.outfile, args.clobber)
-        print(f"Output written to {args.outfile}.")
+        output_file = apply_deadtime_correction(args.infile, args.hkfile, args.outfile, args.clobber)
+        print(f"Output written to {output_file}.")
     except Exception as e:
         print(f"Error: {e}")
         exit(1)
