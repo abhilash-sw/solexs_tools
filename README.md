@@ -176,6 +176,28 @@ solexs-genmultispec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tst
 
 ---
 
+### `solexs-dtcorr`
+
+Perform deadtime correction on daily Level-1 Type II PI spectrogram files. This tool uses Housekeeping (HK) data to adjust the effective exposure time (EXPOSURE column) for every time bin in the file.
+
+**Usage**:
+```bash
+solexs-dtcorr -i <l1_pi_file> -hk <l1_hk_file> [-o <outfile>] [--clobber <True/False>]
+```
+
+**Arguments**:
+- `<l1_pi_file>`: Path to the Level-1 Type II PI spectrogram file
+- `<l1_hk_file>`: Path to the corresponding Level-1 Housekeeping (HK) file
+
+**Options**:
+- `-o, --outfile`: Name of the output corrected file (default: <input>_dt_corr.pi)
+- `-c, --clobber`: Overwrite the output file if it exists
+
+**Example**:
+```bash
+solexs-dtcorr -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -hk AL1_SOLEXS_20240212_SDD2_L1.hk.gz
+```
+
 
 ## Example Jupyter Notebook
 The package includes an example notebook that demonstrates how to perform spectral fitting of SoLEXS data using XSPEC.
