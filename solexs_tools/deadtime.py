@@ -5,7 +5,7 @@
 # @File Name: deadtime.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-02 05:18:09 pm
+# @Last Modified time: 2026-01-02 05:23:59 pm
 #####################################################
 
 import os, argparse
@@ -38,10 +38,6 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
         raise TypeError('Input File is not Type II PHA file.')
 
 
-    if output_file is None:
-        base, ext = os.path.splitext(pi_file)
-        output_file = f"{base}_dt_corr{ext}"
-
     filter_sdd = hdu1[1].header['FILTER']
     offset_cr1, offset_cr2, dt_file = get_deadtime_params(filter_sdd)
 
@@ -70,8 +66,9 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
     header['HISTORY'] = f"Deadtime correction Offset Count Rate ={offset_cr}"
 
     if output_file is None:
-        base, ext = os.path.splitext(pi_file)
-        output_file = f"{base}_dt_corr{ext}"
+        pi_file_basename = os.path.basename(pi_file)
+        pi_file_basename = pi_file_basename.split('.')[0]
+        output_file = f"{pi_file_basename}_dt_corr.pi.gz"
 
     hdu1.writeto(output_file,overwrite=clobber,checksum=True)
 
@@ -88,6 +85,7 @@ def solexs_deadtime_correction_cli():
 
     try:
         apply_deadtime_correction(args.infile, args.hkfile, args.outfile, args.clobber)
+        print(f"Output written to {args.outfile}.")
     except Exception as e:
         print(f"Error: {e}")
         exit(1)
