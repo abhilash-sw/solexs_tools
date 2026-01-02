@@ -5,7 +5,7 @@
 # @File Name: deadtime.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-02 04:27:12 pm
+# @Last Modified time: 2026-01-02 05:07:30 pm
 #####################################################
 
 import os, argparse
@@ -15,9 +15,9 @@ from .caldb_utils import get_caldb_base_dir
 
 CALDB_BASE_DIR = get_caldb_base_dir()
 
-def get_deadtime_params(SDD_number):
+def get_deadtime_params(filter_sdd):
 
-    dt_file = os.path.join(CALDB_BASE_DIR, "deadtime", f"solexs_deadtime_params_SDD{SDD_number}_v1.fits")
+    dt_file = os.path.join(CALDB_BASE_DIR, "deadtime", f"solexs_deadtime_params_{filter_sdd}_v1.fits")
     
     with fits.open(dt_file) as hdul:
         
