@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 10:47:02 pm
+# @Last Modified time: 2026-01-05 10:48:47 pm
 #####################################################
 
 import numpy as np
@@ -178,6 +178,13 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None, flux
     if hdu1[0].header['CONTENT'] != 'Type II PHA file':
         raise TypeError('Input File is not Type II PHA file.')    
     
+    is_dt_corr = hdu1[1].header.get('DTCORR',False)
+
+    if flux and not is_dt_corr:
+        hdu1.close()
+        raise ValueError("Flux calculation requires a deadtime-corrected input file. "
+                         "Please run 'solexs-dtcorr' on this file first.")
+
     data = hdu1[1].data
 
     time_solexs = data['TSTART']
@@ -240,7 +247,6 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None, flux
             outfile = f'{pi_file_basename}_{ene_low_str}_{ene_high_str}keV_{time_bin}sec_flux.lc'
         else:
             outfile = f'{pi_file_basename}_{ene_low_str}_{ene_high_str}keV_{time_bin}sec.lc'
-    is_dt_corr = hdu1[1].header.get('DTCORR',False)
 
     outfile = write_lc(time_solexs,lc_data, time_bin, filter_sdd,outfile,is_dt_corr,clobber)
 
