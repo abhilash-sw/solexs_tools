@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 10:20:28 pm
+# @Last Modified time: 2026-01-05 10:25:26 pm
 #####################################################
 
 import numpy as np
@@ -230,10 +230,10 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None, flux
 
 def solexs_genlc_cli():
     # Create the parser
-    parser = argparse.ArgumentParser(description='Generate a light curve file from Level 1 PI spectrogram file (Type II) for a specified energy range.')
+    parser = argparse.ArgumentParser(description='Generate a light curve file from PI spectrogram file (Type II) for a specified energy range.')
 
     # Add arguments
-    parser.add_argument('-i','--infile', type=str, help='Path to the Level 1 PI spectrogram file (Type II)')
+    parser.add_argument('-i','--infile', type=str, help='Path to the PI spectrogram file (Type II)')
     parser.add_argument('-elo','--ene_low', type=float, help='Lower energy limit in keV')
     parser.add_argument('-ehi','--ene_high', type=float, help='Higher energy limit in keV')
     parser.add_argument('-tbin', '--time_bin', type=int, help='Time bin size in seconds', default=None)
