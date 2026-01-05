@@ -5,7 +5,7 @@
 # @File Name: deadtime.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-02 09:12:12 pm
+# @Last Modified time: 2026-01-05 05:31:40 pm
 #####################################################
 
 import os, argparse
@@ -61,6 +61,8 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
     data['EXPOSURE'] = new_exposures
 
     header = hdu1[1].header
+
+    header['DTCORR'] = (True, 'Deadtime correction applied')
 
     header['HISTORY'] = f"Deadtime corrected using {os.path.basename(dt_file)}"
     header['HISTORY'] = f"Deadtime correction Offset Count Rate ={offset_cr}"
