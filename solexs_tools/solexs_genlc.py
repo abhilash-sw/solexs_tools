@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 10:25:26 pm
+# @Last Modified time: 2026-01-05 10:42:28 pm
 #####################################################
 
 import numpy as np
@@ -20,21 +20,34 @@ CALDB_BASE_DIR = get_caldb_base_dir()
 KEV_TO_JOULES = 1.60218e-16
 CM2_TO_M2_FACTOR = 10000.0
 
-def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, dtcorr=False, clobber=True):
+def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, dtcorr=False, flux=False, clobber=True):
     hdu_list = []
     primary_hdu = fits.PrimaryHDU()
                                     
     hdu_list.append(primary_hdu)
 
+    if flux:
+        col_name = 'FLUX'
+        col_unit = 'W/m^2'
+        ext_name = 'FLUX'
+        hdu_clas3 = 'FLUX'
+    else:
+        col_name = 'RATE' # Standard OGIP for count/s (was 'COUNTS')
+        col_unit = 'count/s'
+        ext_name = 'RATE'
+        hdu_clas3 = 'RATE'
+
+
     fits_columns = []
-    col1 = fits.Column(name='TIME',format='1J',array=time_data)
-    col2 = fits.Column(name='COUNTS',format='1E',array=lc_data)
+    col1 = fits.Column(name='TIME',format='1J',array=time_data, unit='s')
+    # col2 = fits.Column(name='COUNTS',format='1E',array=lc_data)
+    col2 = fits.Column(name=col_name,format='1E',array=lc_data, unit=col_unit)
 
     fits_columns.append(col1)
     fits_columns.append(col2)
 
     hdu_lc = fits.BinTableHDU.from_columns(fits.ColDefs(fits_columns))
-    hdu_lc.name = 'RATE'
+    hdu_lc.name = ext_name#'RATE'
 
     hdu_list.append(hdu_lc)
                                                                        
@@ -49,6 +62,9 @@ def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, dtcorr=False, cl
     hdu_lc.header['TIMESYS'] = 'UTC'
     hdu_lc.header['TIMEREF'] = 'LOCAL'
     hdu_lc.header['TIMEUNIT'] = 's'
+
+    hdu_lc.header['BUNIT'] = col_unit
+
     date_obs = unix_time_to_utc(time_data[0]) #datetime.datetime.fromtimestamp(time_data[0]).strftime('%Y-%m-%d %H:%M:%S')
     date_end = unix_time_to_utc(time_data[-1]) #datetime.datetime.fromtimestamp(time_data[-1]).strftime('%Y-%m-%d %H:%M:%S')
     hdu_lc.header['DATE-OBS'] = date_obs
@@ -61,7 +77,7 @@ def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, dtcorr=False, cl
         hdu_lc.header['DTCORR'] = (False, 'No deadtime correction applied')    
 
     _HEADER_KEYWORDS = (
-        ("EXTNAME", "RATE", "Extension name"),
+        ("EXTNAME", ext_name, "Extension name"),
         ("CONTENT", "LIGHT CURVE", "File content"),
         ("HDUCLASS", "OGIP    ", "format conforms to OGIP standard"),
         ("HDUVERS", "1.1.0   ", "Version of format (OGIP memo CAL/GEN/92-002a)"),
@@ -74,7 +90,7 @@ def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, dtcorr=False, cl
         ("HDUVERS2", "1.1.0   ", "Obsolete - included for backwards compatibility"),
         ("HDUCLAS1", "LIGHTCURVE", "Extension contains spectral data  "),
         ("HDUCLAS2", "TOTAL ", ""),
-        ("HDUCLAS3", "COUNTS ", ""),
+        ("HDUCLAS3", hdu_clas3, ""),
         ("FILTER", filter_sdd, "Filter used"),
     )
 
