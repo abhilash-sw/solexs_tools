@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-11-04 02:36:31 pm
+# @Last Modified time: 2026-01-05 04:38:46 pm
 #####################################################
 
 import argparse
@@ -53,8 +53,10 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
                                                                        
     _hdu_list = fits.HDUList(hdus=hdu_list)
 
-    tstart_dt = datetime.datetime.fromtimestamp(tstart)
-    tstop_dt = datetime.datetime.fromtimestamp(tstop)
+    # tstart_dt = datetime.datetime.fromtimestamp(tstart)
+    # tstop_dt = datetime.datetime.fromtimestamp(tstop)
+    tstart_utc_time_str = unix_time_to_utc(tstart)
+    tstop_utc_time_str = unix_time_to_utc(tstop)
     
     # filter_sdd = hdu1[1].header['FILTER']
     arf_file = os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}_v{__caldb_version__}.arf')
@@ -63,8 +65,8 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
     print(f'ARF: {arf_file}')
     print(f'RMF: {rmf_file}')
 
-    _hdu_list[1].header.set('TSTART',tstart_dt.isoformat())
-    _hdu_list[1].header.set('TSTOP',tstop_dt.isoformat())
+    _hdu_list[1].header.set('TSTART',tstart_utc_time_str)
+    _hdu_list[1].header.set('TSTOP',tstop_utc_time_str)
     _hdu_list[1].header.set('TIMESYS', 'UTC')
     _hdu_list[1].header.set('EXPOSURE',f'{exposure:.0f}')
 

@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 03:32:48 pm
+# @Last Modified time: 2026-01-05 04:32:09 pm
 #####################################################
 
 import numpy as np
@@ -13,6 +13,7 @@ from astropy.io import fits
 import datetime, os, argparse
 from . import __version__, __caldb_version__
 from .caldb_utils import get_caldb_base_dir
+from .time_utils import unix_time_to_utc
 
 CALDB_BASE_DIR = get_caldb_base_dir()
 
@@ -41,13 +42,13 @@ def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, clobber=True):
     hdu_lc.header['TSTOP'] = time_data[-1]
     hdu_lc.header['TIMEDEL'] = str(time_bin) #second
     hdu_lc.header['TIMZERO'] = 0
-    hdu_lc.header['MJDREFI'] = 40587 # MJD REF of 1970-01-01 05:30:00
-    hdu_lc.header['MJDREFF'] = 0.22916666651
+    hdu_lc.header['MJDREFI'] = 40587 # MJD REF of 1970-01-01
+    hdu_lc.header['MJDREFF'] = 0
     hdu_lc.header['TIMESYS'] = 'UTC'
     hdu_lc.header['TIMEREF'] = 'LOCAL'
     hdu_lc.header['TIMEUNIT'] = 's'
-    date_obs = datetime.datetime.fromtimestamp(time_data[0]).strftime('%Y-%m-%d %H:%M:%S')
-    date_end = datetime.datetime.fromtimestamp(time_data[-1]).strftime('%Y-%m-%d %H:%M:%S')
+    date_obs = unix_time_to_utc(time_data[0]) #datetime.datetime.fromtimestamp(time_data[0]).strftime('%Y-%m-%d %H:%M:%S')
+    date_end = unix_time_to_utc(time_data[-1]) #datetime.datetime.fromtimestamp(time_data[-1]).strftime('%Y-%m-%d %H:%M:%S')
     hdu_lc.header['DATE-OBS'] = date_obs
     hdu_lc.header['DATE-END'] = date_end
 
