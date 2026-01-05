@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 08:31:23 pm
+# @Last Modified time: 2026-01-05 10:09:13 pm
 #####################################################
 
 import numpy as np
@@ -17,6 +17,8 @@ from .time_utils import unix_time_to_utc
 
 CALDB_BASE_DIR = get_caldb_base_dir()
 
+KEV_TO_JOULES = 1.60218e-16
+CM2_TO_M2_FACTOR = 10000.0
 
 def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, dtcorr=False, clobber=True):
     hdu_list = []
@@ -150,7 +152,7 @@ def rebin_lc(lc_data, time_arr ,rebin_sec): #
     return new_lc_data, new_time_arr
 
 
-def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None,clobber=True):
+def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None, flux=False, clobber=True):
     if ene_high <= ene_low:
         raise ValueError(f'Higher energy limit {ene_high} is less than lower energy limit {ene_low}.')
 
@@ -165,7 +167,9 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None,clobb
     time_solexs = data['TSTART']
 
     filter_sdd = hdu1[1].header['FILTER']
-    ene_bins_file = os.path.join(CALDB_BASE_DIR,'ebounds',f'energy_bins_out_{filter_sdd}_v{__caldb_version__}.dat')
+    ene_bins_file = os.path.join(CALDB_BASE_DIR, 'ebounds', f'energy_bins_out_{filter_sdd}_v{__caldb_version__}.dat')
+    if not os.path.exists(ene_bins_file):
+        raise FileNotFoundError(f"Energy bins file not found: {ene_bins_file}")
     ene_bins = np.loadtxt(ene_bins_file)
 
     if ene_low < 2:
@@ -180,8 +184,32 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None,clobb
     ene_low_str = f'{ene_bins[ch_low,0]:.2f}'
     ene_high_str = f'{ene_bins[ch_high,1]:.2f}'
 
-    lc_counts = data['COUNTS'][:,ch_low:ch_high].sum(axis=1)
-    lc_data = lc_counts/data['EXPOSURE']
+    raw_counts_slice = data['COUNTS'][:, ch_low:ch_high]
+    
+    if flux:
+        energy_grid, area_grid = get_arf_data(filter_sdd)
+        
+        area_slice = area_grid[ch_low:ch_high]
+        energy_slice = energy_grid[ch_low:ch_high]
+
+        # 1. Calculate keV per cm^2 for every channel
+        with np.errstate(divide='ignore', invalid='ignore'):
+            flux_per_channel = raw_counts_slice / area_slice * energy_slice
+            
+        flux_per_channel[~np.isfinite(flux_per_channel)] = 0.0
+
+        # 2. Sum across channels (keV / cm^2)
+        total_flux_keV = flux_per_channel.sum(axis=1)
+        
+        #3. Convert to (W/m^2)
+        lc_numerator = total_flux_keV * KEV_TO_JOULES * CM2_TO_M2_FACTOR
+        
+    else:
+        # Standard Count Rate calculation: Sum counts first
+        lc_numerator = raw_counts_slice.sum(axis=1)
+
+    # lc_counts = data['COUNTS'][:,ch_low:ch_high].sum(axis=1)
+    lc_data = lc_numerator/data['EXPOSURE']
 
     if time_bin:
         lc_data, time_solexs = rebin_lc(lc_data,time_solexs,time_bin)
