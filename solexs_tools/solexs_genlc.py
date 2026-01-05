@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-10-26 07:07:06 pm
+# @Last Modified time: 2026-01-05 03:32:48 pm
 #####################################################
 
 import numpy as np
@@ -159,7 +159,8 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None,clobb
     ene_low_str = f'{ene_bins[ch_low,0]:.2f}'
     ene_high_str = f'{ene_bins[ch_high,1]:.2f}'
 
-    lc_data = data['COUNTS'][:,ch_low:ch_high].sum(axis=1)
+    lc_counts = data['COUNTS'][:,ch_low:ch_high].sum(axis=1)
+    lc_data = lc_counts/data['EXPOSURE']
 
     if time_bin:
         lc_data, time_solexs = rebin_lc(lc_data,time_solexs,time_bin)
