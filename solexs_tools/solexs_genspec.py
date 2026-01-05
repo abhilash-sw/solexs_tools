@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 05:14:49 pm
+# @Last Modified time: 2026-01-05 05:48:04 pm
 #####################################################
 
 import argparse
@@ -23,7 +23,7 @@ CALDB_BASE_DIR = get_caldb_base_dir()
 
 QUALITY_THRESHOLD_CHANNEL = 56 #2.74 - 2.79
 
-def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, clobber=True):
+def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, dtcorr=False, clobber=True):
     # writing file
     n_ch = len(channel)
     hdu_list = []
@@ -112,6 +112,12 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
     for k in _HEADER_KEYWORDS:
         data_header.append(k)
     
+    if dtcorr:
+        data_header['DTCORR'] = (True, 'Propagated from Input: Deadtime correction applied')
+        data_header['HISTORY'] = 'Data derived from a deadtime-corrected type II PI file.'
+    else:
+        data_header['DTCORR'] = (False, 'No deadtime correction applied')
+
     _hdu_list[1].header = data_header
     
 
@@ -230,7 +236,10 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
         outfile = pi_file_basename + '_' + tstart_dt.strftime('%H%M%S') + '_' + tstop_dt.strftime('%H%M%S')
 
     filter_sdd = hdu1[1].header['FILTER']
-    outfile = write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, clobber)
+
+    is_dt_corr = hdu1[1].header.get('DTCORR',False)
+
+    outfile = write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, is_dt_corr, clobber)
 
     return outfile
 
@@ -327,7 +336,9 @@ def solexs_genmultispec(spec_file, tstart, tstop, time_bin, gti_file, output_dir
         outfile_name = pi_file_basename + '_' + current_tstart_dt.strftime('%H%M%S') + '_' + current_tstop_dt.strftime('%H%M%S')
         outfile = os.path.join(output_dir,outfile_name)
 
-        write_spec(channel, spec_data, stat_err, sys_err, current_tstart, current_tstop, exposure, filter_sdd, outfile, clobber)
+        is_dt_corr = hdu1[1].header.get('DTCORR',False)
+
+        write_spec(channel, spec_data, stat_err, sys_err, current_tstart, current_tstop, exposure, filter_sdd, outfile, is_dt_corr, clobber)
 
         print(f"Generated spectrum for time range {current_tstart_dt.isoformat()} to {current_tstop_dt.isoformat()}: {outfile}")
 
