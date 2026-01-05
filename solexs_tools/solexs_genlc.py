@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 10:42:28 pm
+# @Last Modified time: 2026-01-05 10:47:02 pm
 #####################################################
 
 import numpy as np
@@ -235,8 +235,11 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None, flux
     if outfile == None:
         pi_file_basename = os.path.basename(spec_file)
         pi_file_basename = pi_file_basename.split('.')[0]
-        outfile = f'{pi_file_basename}_{ene_low_str}_{ene_high_str}keV_{time_bin}sec.lc'
 
+        if flux:
+            outfile = f'{pi_file_basename}_{ene_low_str}_{ene_high_str}keV_{time_bin}sec_flux.lc'
+        else:
+            outfile = f'{pi_file_basename}_{ene_low_str}_{ene_high_str}keV_{time_bin}sec.lc'
     is_dt_corr = hdu1[1].header.get('DTCORR',False)
 
     outfile = write_lc(time_solexs,lc_data, time_bin, filter_sdd,outfile,is_dt_corr,clobber)
