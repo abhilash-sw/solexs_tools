@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 04:32:09 pm
+# @Last Modified time: 2026-01-05 05:51:20 pm
 #####################################################
 
 import numpy as np
@@ -18,7 +18,7 @@ from .time_utils import unix_time_to_utc
 CALDB_BASE_DIR = get_caldb_base_dir()
 
 
-def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, clobber=True):
+def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, dtcorr=False, clobber=True):
     hdu_list = []
     primary_hdu = fits.PrimaryHDU()
                                     
@@ -51,6 +51,12 @@ def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, clobber=True):
     date_end = unix_time_to_utc(time_data[-1]) #datetime.datetime.fromtimestamp(time_data[-1]).strftime('%Y-%m-%d %H:%M:%S')
     hdu_lc.header['DATE-OBS'] = date_obs
     hdu_lc.header['DATE-END'] = date_end
+
+    if dtcorr:
+        hdu_lc.header['DTCORR'] = (True, 'Propagated from Input: Deadtime correction applied')
+        hdu_lc.header['HISTORY'] = 'Data derived from a deadtime-corrected type II PI file.'
+    else:
+        hdu_lc.header['DTCORR'] = (False, 'No deadtime correction applied')    
 
     _HEADER_KEYWORDS = (
         ("EXTNAME", "RATE", "Extension name"),
@@ -173,7 +179,9 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None,clobb
         pi_file_basename = pi_file_basename.split('.')[0]
         outfile = f'{pi_file_basename}_{ene_low_str}_{ene_high_str}keV_{time_bin}sec.lc'
 
-    outfile = write_lc(time_solexs,lc_data, time_bin, filter_sdd,outfile,clobber)
+    is_dt_corr = hdu1[1].header.get('DTCORR',False)
+
+    outfile = write_lc(time_solexs,lc_data, time_bin, filter_sdd,outfile,is_dt_corr,clobber)
 
     return outfile
 
