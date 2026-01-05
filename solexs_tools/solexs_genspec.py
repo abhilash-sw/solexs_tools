@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 04:38:46 pm
+# @Last Modified time: 2026-01-05 05:14:49 pm
 #####################################################
 
 import argparse
@@ -356,6 +356,9 @@ def solexs_genmultispec_cli():
     print(f'Stop Time: {tstop_utc_time_str}')
     print(f'Time Bin: {args.time_bin} seconds')
     print(f'Output Directory: {args.output_dir}')
+
+    if not os.path.isdir(args.output_dir):
+        os.mkdir(args.output_dir)
 
     try:
         solexs_genmultispec(
