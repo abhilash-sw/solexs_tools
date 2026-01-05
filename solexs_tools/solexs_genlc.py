@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 05:51:20 pm
+# @Last Modified time: 2026-01-05 08:31:23 pm
 #####################################################
 
 import numpy as np
@@ -109,6 +109,20 @@ def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, dtcorr=False, cl
     _hdu_list.writeto(f'{outfile}.lc',overwrite=clobber)
 
     return f'{outfile}.lc'
+
+def get_arf_data(filter_sdd):
+    arf_file = os.path.join(CALDB_BASE_DIR, "arf", f"solexs_arf_pi_{filter_sdd}_v1.arf")
+    
+    if not os.path.exists(arf_file):
+        raise FileNotFoundError(f"Flux ARF file not found in CALDB: {arf_file}")
+
+    with fits.open(arf_file) as hdul:
+        data = hdul['SPECRESP'].data
+        energy = (data['ENERG_LO'] + data['ENERG_HI']) / 2.0
+        area = data['SPECRESP']
+        
+    return energy, area
+
 
 def rebin_lc(lc_data, time_arr ,rebin_sec): #
     """lc_data: has to be counts per second"""
