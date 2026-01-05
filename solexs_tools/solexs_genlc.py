@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 10:09:13 pm
+# @Last Modified time: 2026-01-05 10:20:28 pm
 #####################################################
 
 import numpy as np
@@ -238,13 +238,14 @@ def solexs_genlc_cli():
     parser.add_argument('-ehi','--ene_high', type=float, help='Higher energy limit in keV')
     parser.add_argument('-tbin', '--time_bin', type=int, help='Time bin size in seconds', default=None)
     parser.add_argument('-o','--outfile', type=str, help='Output file name (optional)', default=None)
+    parser.add_argument("--flux", type=bool, default= False, help="Generate Flux Light Curve (W/m^2)")
     parser.add_argument('-c','--clobber', type=bool, default= False, help='Overwrite existing file if it exists')
 
     # Parse arguments
     args = parser.parse_args()
 
     try:
-        outfile_name = solexs_genlc(args.infile, args.ene_low, args.ene_high, args.time_bin, outfile=args.outfile, clobber=args.clobber)
+        outfile_name = solexs_genlc(args.infile, args.ene_low, args.ene_high, args.time_bin, outfile=args.outfile, flux=args.flux, clobber=args.clobber)
         print(f"Output written to {outfile_name}.")
     except Exception as e:
         print(f"Error: {e}")
