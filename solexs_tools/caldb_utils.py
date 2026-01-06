@@ -5,7 +5,7 @@
 # @File Name: caldb_utils.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 05:34:07 pm
+# @Last Modified time: 2026-01-06 05:37:55 pm
 #####################################################
 
 import argparse
@@ -122,7 +122,7 @@ def get_caldb_file(file_type, filter_sdd='SDD2', obs_date=None):
     if not entries:
         raise ValueError(f"No valid '{file_type}' files defined for detector '{filter_sdd}'.")
 
-    target_dt = datetime.datetime.now(tz=datetime.timezone.utc)
+    target_dt = datetime.datetime.utcnow()
     
     if obs_date is not None:
         target_dt = datetime.datetime.strptime(obs_date, '%Y%m%d')
@@ -130,12 +130,12 @@ def get_caldb_file(file_type, filter_sdd='SDD2', obs_date=None):
     selected_file = None
     
     for entry in entries:
-        start_dt = datetime.fromisoformat(entry['valid_start'])
+        start_dt = datetime.datetime.fromisoformat(entry['valid_start'])
         
         if entry['valid_stop']:
-            stop_dt = datetime.fromisoformat(entry['valid_stop'])
+            stop_dt = datetime.datetime.fromisoformat(entry['valid_stop'])
         else:
-            stop_dt = datetime.max 
+            stop_dt = datetime.datetime.max 
 
         if start_dt <= target_dt < stop_dt:
             selected_file = entry['filename']
