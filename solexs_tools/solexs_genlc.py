@@ -5,17 +5,16 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 04:59:54 pm
+# @Last Modified time: 2026-01-06 05:23:04 pm
 #####################################################
 
 import numpy as np
 from astropy.io import fits
 import datetime, os, argparse
-from . import __version__, __caldb_version__
-from .caldb_utils import get_caldb_base_dir
+from . import __version__
+from .caldb_utils import get_caldb_file
 from .time_utils import unix_time_to_utc
 
-CALDB_BASE_DIR = get_caldb_base_dir()
 
 KEV_TO_JOULES = 1.60218e-16
 CM2_TO_M2_FACTOR = 10000.0
@@ -128,11 +127,11 @@ def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, dtcorr=False, fl
 
     return f'{outfile}.lc'
 
-def get_arf_data(filter_sdd):
-    arf_file = os.path.join(CALDB_BASE_DIR, "arf", f"solexs_arf_pi_{filter_sdd}_v1.arf")
+def get_arf_data(filter_sdd, obs_date):
+    arf_file = get_caldb_file('arf_pi',filter_sdd,obs_date)#os.path.join(CALDB_BASE_DIR, "arf", f"solexs_arf_pi_{filter_sdd}_v1.arf")
     
-    if not os.path.exists(arf_file):
-        raise FileNotFoundError(f"Flux ARF file not found in CALDB: {arf_file}")
+    # if not os.path.exists(arf_file):
+    #     raise FileNotFoundError(f"Flux ARF file not found in CALDB: {arf_file}")
 
     with fits.open(arf_file) as hdul:
         data = hdul['SPECRESP'].data
@@ -190,9 +189,10 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None, flux
     time_solexs = data['TSTART']
 
     filter_sdd = hdu1[1].header['FILTER']
-    ene_bins_file = os.path.join(CALDB_BASE_DIR, 'ebounds', f'energy_bins_out_{filter_sdd}_v{__caldb_version__}.dat')
-    if not os.path.exists(ene_bins_file):
-        raise FileNotFoundError(f"Energy bins file not found: {ene_bins_file}")
+    obs_date = hdu1[0].header['OBS_DATE']
+    ene_bins_file = get_caldb_file('ebounds',filter_sdd,obs_date)#os.path.join(CALDB_BASE_DIR, 'ebounds', f'energy_bins_out_{filter_sdd}_v{__caldb_version__}.dat')
+    # if not os.path.exists(ene_bins_file):
+    #     raise FileNotFoundError(f"Energy bins file not found: {ene_bins_file}")
     ene_bins = np.loadtxt(ene_bins_file)
 
     if ene_low < 2:
@@ -210,7 +210,7 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None, flux
     raw_counts_slice = data['COUNTS'][:, ch_low:ch_high]
     
     if flux:
-        energy_grid, area_grid = get_arf_data(filter_sdd)
+        energy_grid, area_grid = get_arf_data(filter_sdd,obs_date)
         
         area_slice = area_grid[ch_low:ch_high]
         energy_slice = energy_grid[ch_low:ch_high]
