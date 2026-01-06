@@ -5,7 +5,7 @@
 # @File Name: caldb_utils.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 05:03:13 pm
+# @Last Modified time: 2026-01-06 05:32:25 pm
 #####################################################
 
 import argparse
@@ -122,7 +122,7 @@ def get_caldb_file(file_type, filter_sdd='SDD2', obs_date=None):
     if not entries:
         raise ValueError(f"No valid '{file_type}' files defined for detector '{filter_sdd}'.")
 
-    target_dt = datetime.utcnow() # Default to now
+    target_dt = datetime.datetime.now(tz=datetime.timezone.utc)
     
     if obs_date is not None:
         target_dt = datetime.datetime.strptime(obs_date)
