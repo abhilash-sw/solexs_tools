@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 10:26:50 pm
+# @Last Modified time: 2026-01-06 04:56:40 pm
 #####################################################
 
 import argparse
@@ -241,6 +241,10 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
 
     outfile = write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, is_dt_corr, clobber)
 
+    obs_date = hdu1[0].header.get('OBS_DATE',None)
+    with fits.open(outfile,mode='update') as out_hdu:
+        out_hdu[0].header['OBS_DATE'] = obs_date
+
     return outfile
 
 
@@ -338,7 +342,11 @@ def solexs_genmultispec(spec_file, tstart, tstop, time_bin, gti_file, output_dir
 
         is_dt_corr = hdu1[1].header.get('DTCORR',False)
 
-        write_spec(channel, spec_data, stat_err, sys_err, current_tstart, current_tstop, exposure, filter_sdd, outfile, is_dt_corr, clobber)
+        tmp_outfile = write_spec(channel, spec_data, stat_err, sys_err, current_tstart, current_tstop, exposure, filter_sdd, outfile, is_dt_corr, clobber)
+
+        obs_date = hdu1[0].header.get('OBS_DATE',None)
+        with fits.open(tmp_outfile,mode='update') as out_hdu:
+            out_hdu[0].header['OBS_DATE'] = obs_date
 
         print(f"Generated spectrum for time range {current_tstart_dt.isoformat()} to {current_tstop_dt.isoformat()}: {outfile}")
 
