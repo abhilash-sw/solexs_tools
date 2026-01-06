@@ -2,10 +2,10 @@
 # @Author: SoLEXSPOC
 # @Date:   2024-11-15 09:00:07 am
 # @email: sarwade@ursc.gov.in
-# @File Name: solexs_genspec.py
+# @File Name: genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-11-04 02:36:31 pm
+# @Last Modified time: 2026-01-06 07:25:00 pm
 #####################################################
 
 import argparse
@@ -14,16 +14,16 @@ from astropy.io import fits
 import numpy as np
 import os
 import warnings
+from astropy.io.fits.verify import VerifyWarning
 
-from . import __version__, __caldb_version__
+from . import __version__
 from .time_utils import unix_time_to_utc
-from .caldb_utils import get_caldb_base_dir
+from .caldb_utils import get_caldb_file
 
-CALDB_BASE_DIR = get_caldb_base_dir()
 
 QUALITY_THRESHOLD_CHANNEL = 56 #2.74 - 2.79
 
-def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, clobber=True):
+def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, dtcorr=False, clobber=True):
     # writing file
     n_ch = len(channel)
     hdu_list = []
@@ -53,18 +53,20 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
                                                                        
     _hdu_list = fits.HDUList(hdus=hdu_list)
 
-    tstart_dt = datetime.datetime.fromtimestamp(tstart)
-    tstop_dt = datetime.datetime.fromtimestamp(tstop)
+    # tstart_dt = datetime.datetime.fromtimestamp(tstart)
+    # tstop_dt = datetime.datetime.fromtimestamp(tstop)
+    tstart_utc_time_str = unix_time_to_utc(tstart)
+    tstop_utc_time_str = unix_time_to_utc(tstop)
     
     # filter_sdd = hdu1[1].header['FILTER']
-    arf_file = os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}_v{__caldb_version__}.arf')
-    rmf_file = os.path.join(CALDB_BASE_DIR,'response','rmf',f'solexs_gaussian_{filter_sdd}_v{__caldb_version__}.rmf')
+    # arf_file = get_caldb_file('arf',filter_sdd, obs_date) #os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}_v{__caldb_version__}.arf')
+    # rmf_file = get_caldb_file('rmf',filter_sdd, obs_date) #os.path.join(CALDB_BASE_DIR,'response','rmf',f'solexs_gaussian_{filter_sdd}_v{__caldb_version__}.rmf')
 
-    print(f'ARF: {arf_file}')
-    print(f'RMF: {rmf_file}')
+    # print(f'ARF: {arf_file}')
+    # print(f'RMF: {rmf_file}')
 
-    _hdu_list[1].header.set('TSTART',tstart_dt.isoformat())
-    _hdu_list[1].header.set('TSTOP',tstop_dt.isoformat())
+    _hdu_list[1].header.set('TSTART',tstart_utc_time_str)
+    _hdu_list[1].header.set('TSTOP',tstop_utc_time_str)
     _hdu_list[1].header.set('TIMESYS', 'UTC')
     _hdu_list[1].header.set('EXPOSURE',f'{exposure:.0f}')
 
@@ -80,7 +82,7 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
         (
             "HDUDOC",
             "OGIP memos CAL/GEN/92-002 & 92-002a",
-            "Documents describing the forma",
+            "Documents describing the format",
         ),
         ("HDUVERS1", "1.0.0   ", "Obsolete - included for backwards compatibility"),
         ("HDUVERS2", "1.1.0   ", "Obsolete - included for backwards compatibility"),
@@ -89,8 +91,8 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
         ("HDUCLAS3", "COUNT ", ""),
         ("HDUCLAS4", "TYPE:I ", ""),
         ("FILTER", filter_sdd, "Filter used"),
-        ('RESPFILE', rmf_file),
-        ('ANCRFILE', arf_file),
+        # ('RESPFILE', rmf_file),
+        # ('ANCRFILE', arf_file),
         ('BACKFILE','None'),        
         ("CHANTYPE", "PI", "Channel type"),
         ("POISSERR", False, "Are the rates Poisson distributed"),
@@ -110,6 +112,12 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
     for k in _HEADER_KEYWORDS:
         data_header.append(k)
     
+    if dtcorr:
+        data_header['DTCORR'] = (True, 'Propagated from Input: Deadtime correction applied')
+        data_header['HISTORY'] = 'Data derived from a deadtime-corrected type II PI file.'
+    else:
+        data_header['DTCORR'] = (False, 'No deadtime correction applied')
+
     _hdu_list[1].header = data_header
     
 
@@ -135,7 +143,9 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
     _hdu_list[0].header = primary_header
         
     outfile = outfile[:-3] if outfile.endswith('.pi') else outfile
-    _hdu_list.writeto(f'{outfile}.pi',overwrite=clobber)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', category=VerifyWarning)
+        _hdu_list.writeto(f'{outfile}.pi',overwrite=clobber)
 
     return f'{outfile}.pi' 
 
@@ -228,17 +238,33 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
         outfile = pi_file_basename + '_' + tstart_dt.strftime('%H%M%S') + '_' + tstop_dt.strftime('%H%M%S')
 
     filter_sdd = hdu1[1].header['FILTER']
-    outfile = write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, clobber)
+
+    is_dt_corr = hdu1[1].header.get('DTCORR',False)
+
+    outfile = write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, is_dt_corr, clobber)
+
+    obs_date = hdu1[0].header.get('OBS_DATE',None)
+    with fits.open(outfile,mode='update') as out_hdu:
+        out_hdu[0].header['OBS_DATE'] = obs_date
+
+        arf_file = get_caldb_file('arf',filter_sdd, obs_date) 
+        rmf_file = get_caldb_file('rmf',filter_sdd, obs_date) 
+
+        print(f'ARF: {arf_file}')
+        print(f'RMF: {rmf_file}')
+
+        out_hdu[1].header['ANCRFILE'] = arf_file
+        out_hdu[1].header['RESPFILE'] = rmf_file
 
     return outfile
 
 
 def solexs_genspec_cli():
     # Create the parser
-    parser = argparse.ArgumentParser(description='Generate a type-I PI spectral file from Level 1 PI spectrogram file (Type II) for a specified time range.')
+    parser = argparse.ArgumentParser(description='Generate a type-I PI spectral file from PI spectrogram file (Type II) for a specified time range.')
 
     # Add arguments
-    parser.add_argument('-i','--infile', type=str, help='Path to the Level 1 PI spectrogram file (Type II)')
+    parser.add_argument('-i','--infile', type=str, help='Path to the PI spectrogram file (Type II)')
     parser.add_argument('-tstart', type=float, help='Start time in Unix seconds')
     parser.add_argument('-tstop', type=float, help='Stop time in Unix seconds')
     parser.add_argument('-gti', '--gti_file', type=str, help='Path to the Level 1 Good Time Interval File')
@@ -325,7 +351,22 @@ def solexs_genmultispec(spec_file, tstart, tstop, time_bin, gti_file, output_dir
         outfile_name = pi_file_basename + '_' + current_tstart_dt.strftime('%H%M%S') + '_' + current_tstop_dt.strftime('%H%M%S')
         outfile = os.path.join(output_dir,outfile_name)
 
-        write_spec(channel, spec_data, stat_err, sys_err, current_tstart, current_tstop, exposure, filter_sdd, outfile, clobber)
+        is_dt_corr = hdu1[1].header.get('DTCORR',False)
+
+        tmp_outfile = write_spec(channel, spec_data, stat_err, sys_err, current_tstart, current_tstop, exposure, filter_sdd, outfile, is_dt_corr, clobber)
+
+        obs_date = hdu1[0].header.get('OBS_DATE',None)
+        with fits.open(tmp_outfile,mode='update') as out_hdu:
+            out_hdu[0].header['OBS_DATE'] = obs_date
+
+            arf_file = get_caldb_file('arf',filter_sdd, obs_date) 
+            rmf_file = get_caldb_file('rmf',filter_sdd, obs_date) 
+
+            print(f'ARF: {arf_file}')
+            print(f'RMF: {rmf_file}')
+
+            out_hdu[1].header['ANCRFILE'] = arf_file
+            out_hdu[1].header['RESPFILE'] = rmf_file            
 
         print(f"Generated spectrum for time range {current_tstart_dt.isoformat()} to {current_tstop_dt.isoformat()}: {outfile}")
 
@@ -334,10 +375,10 @@ def solexs_genmultispec(spec_file, tstart, tstop, time_bin, gti_file, output_dir
 
 def solexs_genmultispec_cli():
     # Create the parser
-    parser = argparse.ArgumentParser(description='Generate multiple type-I PI spectral files from Level 1 PI spectrogram file (Type II) for a specified time range and time binning.')
+    parser = argparse.ArgumentParser(description='Generate multiple type-I PI spectral files from PI spectrogram file (Type II) for a specified time range and time binning.')
 
     # Add arguments
-    parser.add_argument('-i','--infile', type=str, help='Path to the Level 1 PI spectrogram file (Type II)')
+    parser.add_argument('-i','--infile', type=str, help='Path to the PI spectrogram file (Type II)')
     parser.add_argument('-tstart', type=float, help='Start time in Unix seconds')
     parser.add_argument('-tstop', type=float, help='Stop time in Unix seconds')
     parser.add_argument('-tbin', '--time_bin', type=float, help='Time bin size in seconds')
@@ -354,6 +395,9 @@ def solexs_genmultispec_cli():
     print(f'Stop Time: {tstop_utc_time_str}')
     print(f'Time Bin: {args.time_bin} seconds')
     print(f'Output Directory: {args.output_dir}')
+
+    if not os.path.isdir(args.output_dir):
+        os.mkdir(args.output_dir)
 
     try:
         solexs_genmultispec(
