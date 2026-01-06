@@ -5,7 +5,7 @@
 # @File Name: solexs_genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 10:48:47 pm
+# @Last Modified time: 2026-01-06 04:59:54 pm
 #####################################################
 
 import numpy as np
@@ -249,6 +249,10 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None, flux
             outfile = f'{pi_file_basename}_{ene_low_str}_{ene_high_str}keV_{time_bin}sec.lc'
 
     outfile = write_lc(time_solexs,lc_data, time_bin, filter_sdd,outfile,is_dt_corr,clobber)
+
+    obs_date = hdu1[0].header.get('OBS_DATE',None)
+    with fits.open(outfile,mode='update') as out_hdu:
+        out_hdu[0].header['OBS_DATE'] = obs_date
 
     return outfile
 
