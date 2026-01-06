@@ -5,19 +5,18 @@
 # @File Name: deadtime.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-05 05:31:40 pm
+# @Last Modified time: 2026-01-06 05:06:40 pm
 #####################################################
 
 import os, argparse
 import numpy as np
 from astropy.io import fits
-from .caldb_utils import get_caldb_base_dir
+from .caldb_utils import get_caldb_file
 
-CALDB_BASE_DIR = get_caldb_base_dir()
 
-def get_deadtime_params(filter_sdd):
+def get_deadtime_params(filter_sdd,obs_date=None):
 
-    dt_file = os.path.join(CALDB_BASE_DIR, "deadtime", f"solexs_deadtime_params_{filter_sdd}_v1.fits")
+    dt_file = get_caldb_file('deadtime',filter_sdd,obs_date)
     
     with fits.open(dt_file) as hdul:
         
@@ -39,7 +38,8 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
 
 
     filter_sdd = hdu1[1].header['FILTER']
-    offset_cr1, offset_cr2, dt_file = get_deadtime_params(filter_sdd)
+    obs_date = hdu1[0].header['OBS_DATE']
+    offset_cr1, offset_cr2, dt_file = get_deadtime_params(filter_sdd,obs_date)
 
     hk_hdul = fits.open(hk_file)
     hk_data = hk_hdul[1].data
