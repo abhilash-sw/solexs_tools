@@ -5,7 +5,7 @@
 # @File Name: solexs_genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 04:56:40 pm
+# @Last Modified time: 2026-01-06 05:16:15 pm
 #####################################################
 
 import argparse
@@ -15,11 +15,10 @@ import numpy as np
 import os
 import warnings
 
-from . import __version__, __caldb_version__
+from . import __version__
 from .time_utils import unix_time_to_utc
-from .caldb_utils import get_caldb_base_dir
+from .caldb_utils import get_caldb_file
 
-CALDB_BASE_DIR = get_caldb_base_dir()
 
 QUALITY_THRESHOLD_CHANNEL = 56 #2.74 - 2.79
 
@@ -59,11 +58,11 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
     tstop_utc_time_str = unix_time_to_utc(tstop)
     
     # filter_sdd = hdu1[1].header['FILTER']
-    arf_file = os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}_v{__caldb_version__}.arf')
-    rmf_file = os.path.join(CALDB_BASE_DIR,'response','rmf',f'solexs_gaussian_{filter_sdd}_v{__caldb_version__}.rmf')
+    # arf_file = get_caldb_file('arf',filter_sdd, obs_date) #os.path.join(CALDB_BASE_DIR,'arf',f'solexs_arf_{filter_sdd}_v{__caldb_version__}.arf')
+    # rmf_file = get_caldb_file('rmf',filter_sdd, obs_date) #os.path.join(CALDB_BASE_DIR,'response','rmf',f'solexs_gaussian_{filter_sdd}_v{__caldb_version__}.rmf')
 
-    print(f'ARF: {arf_file}')
-    print(f'RMF: {rmf_file}')
+    # print(f'ARF: {arf_file}')
+    # print(f'RMF: {rmf_file}')
 
     _hdu_list[1].header.set('TSTART',tstart_utc_time_str)
     _hdu_list[1].header.set('TSTOP',tstop_utc_time_str)
@@ -91,8 +90,8 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
         ("HDUCLAS3", "COUNT ", ""),
         ("HDUCLAS4", "TYPE:I ", ""),
         ("FILTER", filter_sdd, "Filter used"),
-        ('RESPFILE', rmf_file),
-        ('ANCRFILE', arf_file),
+        # ('RESPFILE', rmf_file),
+        # ('ANCRFILE', arf_file),
         ('BACKFILE','None'),        
         ("CHANTYPE", "PI", "Channel type"),
         ("POISSERR", False, "Are the rates Poisson distributed"),
@@ -245,6 +244,15 @@ def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): #
     with fits.open(outfile,mode='update') as out_hdu:
         out_hdu[0].header['OBS_DATE'] = obs_date
 
+        arf_file = get_caldb_file('arf',filter_sdd, obs_date) 
+        rmf_file = get_caldb_file('rmf',filter_sdd, obs_date) 
+
+        print(f'ARF: {arf_file}')
+        print(f'RMF: {rmf_file}')
+
+        out_hdu[1].header['ANCRFILE'] = arf_file
+        out_hdu[1].header['RESPFILE'] = rmf_file
+
     return outfile
 
 
@@ -347,6 +355,15 @@ def solexs_genmultispec(spec_file, tstart, tstop, time_bin, gti_file, output_dir
         obs_date = hdu1[0].header.get('OBS_DATE',None)
         with fits.open(tmp_outfile,mode='update') as out_hdu:
             out_hdu[0].header['OBS_DATE'] = obs_date
+
+            arf_file = get_caldb_file('arf',filter_sdd, obs_date) 
+            rmf_file = get_caldb_file('rmf',filter_sdd, obs_date) 
+
+            print(f'ARF: {arf_file}')
+            print(f'RMF: {rmf_file}')
+
+            out_hdu[1].header['ANCRFILE'] = arf_file
+            out_hdu[1].header['RESPFILE'] = rmf_file            
 
         print(f"Generated spectrum for time range {current_tstart_dt.isoformat()} to {current_tstop_dt.isoformat()}: {outfile}")
 
