@@ -2,10 +2,10 @@
 # @Author: SoLEXSPOC
 # @Date:   2024-11-15 09:00:07 am
 # @email: sarwade@ursc.gov.in
-# @File Name: solexs_genspec.py
+# @File Name: genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 05:16:15 pm
+# @Last Modified time: 2026-01-06 07:05:44 pm
 #####################################################
 
 import argparse

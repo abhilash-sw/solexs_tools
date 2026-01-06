@@ -2,10 +2,10 @@
 # @Author: SoLEXSPOC
 # @Date:   2024-12-31 02:19:09 pm
 # @email: sarwade@ursc.gov.in
-# @File Name: solexs_genlc.py
+# @File Name: genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 05:23:04 pm
+# @Last Modified time: 2026-01-06 07:05:48 pm
 #####################################################
 
 import numpy as np

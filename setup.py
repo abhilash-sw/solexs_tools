@@ -5,7 +5,7 @@
 # @File Name: setup.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-02 05:30:26 pm
+# @Last Modified time: 2026-01-06 07:06:14 pm
 #####################################################
 
 from setuptools import setup, find_packages
@@ -31,9 +31,9 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "solexs-genspec=solexs_tools.solexs_genspec:solexs_genspec_cli",
-            "solexs-genmultispec=solexs_tools.solexs_genspec:solexs_genmultispec_cli",
-            "solexs-genlc=solexs_tools.solexs_genlc:solexs_genlc_cli",
+            "solexs-genspec=solexs_tools.genspec:solexs_genspec_cli",
+            "solexs-genmultispec=solexs_tools.genspec:solexs_genmultispec_cli",
+            "solexs-genlc=solexs_tools.genlc:solexs_genlc_cli",
             "solexs-time2utc=solexs_tools.time_utils:solexs_time2utc_cli",
             "solexs-utc2time=solexs_tools.time_utils:solexs_utc2time_cli",
             "solexs-caldb-extract=solexs_tools.caldb_utils:solexs_caldb_extract_cli",
