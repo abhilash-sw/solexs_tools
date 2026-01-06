@@ -5,7 +5,7 @@
 # @File Name: caldb_utils.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 05:32:25 pm
+# @Last Modified time: 2026-01-06 05:34:07 pm
 #####################################################
 
 import argparse
@@ -125,7 +125,7 @@ def get_caldb_file(file_type, filter_sdd='SDD2', obs_date=None):
     target_dt = datetime.datetime.now(tz=datetime.timezone.utc)
     
     if obs_date is not None:
-        target_dt = datetime.datetime.strptime(obs_date)
+        target_dt = datetime.datetime.strptime(obs_date, '%Y%m%d')
 
     selected_file = None
     
