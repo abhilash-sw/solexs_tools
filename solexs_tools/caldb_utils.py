@@ -5,12 +5,12 @@
 # @File Name: caldb_utils.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2025-11-06 01:34:06 pm
+# @Last Modified time: 2026-01-06 03:34:02 pm
 #####################################################
 
 import argparse
 import importlib.resources
-import shutil, os
+import shutil, os, json, datetime
 from pathlib import Path
 
 def get_caldb_base_dir():
@@ -100,3 +100,53 @@ def solexs_caldb_extract_cli():
         extract_caldb(target_path)
     except Exception as e:
         print(f"An error occurred: {e}")
+
+
+def get_caldb_file(file_type, filter_sdd='SDD2', obs_time=None):
+    
+    CALDB_BASE_DIR = get_caldb_base_dir()
+
+    index_path = os.path.join(CALDB_BASE_DIR, "caldb_index.json")
+    if not os.path.exists(index_path):
+        raise FileNotFoundError(f"CALDB Index missing: {index_path}")
+
+    with open(index_path, 'r') as f:
+        index = json.load(f)
+
+
+    det_entries = index['files'].get(filter_sdd)
+    if det_entries is None:
+        raise KeyError(f"Detector '{filter_sdd}' not found in CALDB index.")
+
+    entries = det_entries.get(file_type)
+    if not entries:
+        raise ValueError(f"No valid '{file_type}' files defined for detector '{filter_sdd}'.")
+
+    target_dt = datetime.utcnow() # Default to now
+    
+    if obs_time is not None:
+        if isinstance(obs_time, (int, float)):
+            target_dt = datetime.utcfromtimestamp(obs_time)
+        elif isinstance(obs_time, str):
+            target_dt = datetime.fromisoformat(obs_time)
+        elif isinstance(obs_time, datetime):
+            target_dt = obs_time
+
+    selected_file = None
+    
+    for entry in entries:
+        start_dt = datetime.fromisoformat(entry['valid_start'])
+        
+        if entry['valid_stop']:
+            stop_dt = datetime.fromisoformat(entry['valid_stop'])
+        else:
+            stop_dt = datetime.max 
+
+        if start_dt <= target_dt < stop_dt:
+            selected_file = entry['filename']
+            break
+    
+    if not selected_file:
+        raise ValueError(f"No {file_type} file found for {filter_sdd} at time {target_dt}")
+
+    return os.path.join(CALDB_BASE_DIR, selected_file)
