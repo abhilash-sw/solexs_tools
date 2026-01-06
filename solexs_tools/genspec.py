@@ -5,7 +5,7 @@
 # @File Name: genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 07:05:44 pm
+# @Last Modified time: 2026-01-06 07:25:00 pm
 #####################################################
 
 import argparse
@@ -14,6 +14,7 @@ from astropy.io import fits
 import numpy as np
 import os
 import warnings
+from astropy.io.fits.verify import VerifyWarning
 
 from . import __version__
 from .time_utils import unix_time_to_utc
@@ -81,7 +82,7 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
         (
             "HDUDOC",
             "OGIP memos CAL/GEN/92-002 & 92-002a",
-            "Documents describing the forma",
+            "Documents describing the format",
         ),
         ("HDUVERS1", "1.0.0   ", "Obsolete - included for backwards compatibility"),
         ("HDUVERS2", "1.1.0   ", "Obsolete - included for backwards compatibility"),
@@ -142,7 +143,9 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
     _hdu_list[0].header = primary_header
         
     outfile = outfile[:-3] if outfile.endswith('.pi') else outfile
-    _hdu_list.writeto(f'{outfile}.pi',overwrite=clobber)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', category=VerifyWarning)
+        _hdu_list.writeto(f'{outfile}.pi',overwrite=clobber)
 
     return f'{outfile}.pi' 
 

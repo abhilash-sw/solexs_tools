@@ -5,7 +5,7 @@
 # @File Name: genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 07:05:48 pm
+# @Last Modified time: 2026-01-06 07:25:54 pm
 #####################################################
 
 import numpy as np
@@ -14,6 +14,9 @@ import datetime, os, argparse
 from . import __version__
 from .caldb_utils import get_caldb_file
 from .time_utils import unix_time_to_utc
+import warnings
+from astropy.io.fits.verify import VerifyWarning
+
 
 
 KEV_TO_JOULES = 1.60218e-16
@@ -123,7 +126,10 @@ def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, dtcorr=False, fl
     _hdu_list[0].header = primary_header
         
     outfile = outfile[:-3] if outfile.endswith('.lc') else outfile
-    _hdu_list.writeto(f'{outfile}.lc',overwrite=clobber)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', category=VerifyWarning)    
+        _hdu_list.writeto(f'{outfile}.lc',overwrite=clobber)
 
     return f'{outfile}.lc'
 
