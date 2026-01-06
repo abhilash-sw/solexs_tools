@@ -5,7 +5,7 @@
 # @File Name: caldb_utils.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 03:34:02 pm
+# @Last Modified time: 2026-01-06 05:03:13 pm
 #####################################################
 
 import argparse
@@ -102,7 +102,7 @@ def solexs_caldb_extract_cli():
         print(f"An error occurred: {e}")
 
 
-def get_caldb_file(file_type, filter_sdd='SDD2', obs_time=None):
+def get_caldb_file(file_type, filter_sdd='SDD2', obs_date=None):
     
     CALDB_BASE_DIR = get_caldb_base_dir()
 
@@ -124,13 +124,8 @@ def get_caldb_file(file_type, filter_sdd='SDD2', obs_time=None):
 
     target_dt = datetime.utcnow() # Default to now
     
-    if obs_time is not None:
-        if isinstance(obs_time, (int, float)):
-            target_dt = datetime.utcfromtimestamp(obs_time)
-        elif isinstance(obs_time, str):
-            target_dt = datetime.fromisoformat(obs_time)
-        elif isinstance(obs_time, datetime):
-            target_dt = obs_time
+    if obs_date is not None:
+        target_dt = datetime.datetime.strptime(obs_date)
 
     selected_file = None
     
