@@ -65,7 +65,9 @@ export SOLEXS_CALDB='~/solexs_caldb'
 
 ## CLI Commands
 
-### `solexs-time2utc`
+### 1. Utilities (Time Conversion)
+
+#### `solexs-time2utc`
 Convert a Unix timestamp to UTC in ISO 8601 format.
 
 **Usage**:
@@ -84,7 +86,7 @@ solexs-time2utc 1707735600
 
 ---
 
-### `solexs-utc2time`
+#### `solexs-utc2time`
 Convert UTC in ISO 8601 format to a Unix timestamp.
 
 **Usage**:
@@ -102,8 +104,35 @@ solexs-utc2time 2024-02-12T11:00:00
 ```
 
 ---
+### 2. Deadtime Correction
 
-### `solexs-genlc`
+#### `solexs-dtcorr`
+
+Perform deadtime correction on daily Level-1 Type II PI spectrogram files. This tool uses Housekeeping (HK) data to adjust the effective exposure time (EXPOSURE column) for every time bin in the file.
+
+**Usage**:
+```bash
+solexs-dtcorr -i <l1_pi_file> -hk <l1_hk_file> [-o <outfile>] [--clobber <True/False>]
+```
+
+**Arguments**:
+- `<l1_pi_file>`: Path to the Level-1 Type II PI spectrogram file
+- `<l1_hk_file>`: Path to the corresponding Level-1 Housekeeping (HK) file
+
+**Options**:
+- `-o, --outfile`: Name of the output corrected file (default: <input>_dt_corr.pi)
+- `-c, --clobber`: Overwrite the output file if it exists
+
+**Example**:
+```bash
+solexs-dtcorr -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -hk AL1_SOLEXS_20240212_SDD2_L1.hk.gz
+```
+
+---
+
+### 3. Light Curve Generation
+
+#### `solexs-genlc`
 Generate a light curve file from Level 1 PI spectrogram file (Type II) for a specified energy range. Can optionally calculate physical flux ($W/m^2$).
 
 **Usage**:
@@ -134,7 +163,9 @@ solexs-genlc -i AL1_SOLEXS_20240212_SDD2_L1_dt_corr.pi.gz -elo 3 -ehi 10 --flux 
 
 ---
 
-### `solexs-genspec`
+### 4. Spectral Generation
+
+#### `solexs-genspec`
 Generate a type-I PI spectral file from Level 1 PI spectrogram file (Type II) for a specified time range.
 
 **Usage**:
@@ -159,7 +190,7 @@ solexs-genspec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tstop 17
 
 ---
 
-### `solexs-genmultispec`
+#### `solexs-genmultispec`
 Generate multiple type-I PI spectral files from Level 1 PI spectrogram file (Type II) for a specified time range and time binning.
 
 **Usage**:
@@ -185,27 +216,6 @@ solexs-genmultispec -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -tstart 1707715800 -tst
 
 ---
 
-### `solexs-dtcorr`
-
-Perform deadtime correction on daily Level-1 Type II PI spectrogram files. This tool uses Housekeeping (HK) data to adjust the effective exposure time (EXPOSURE column) for every time bin in the file.
-
-**Usage**:
-```bash
-solexs-dtcorr -i <l1_pi_file> -hk <l1_hk_file> [-o <outfile>] [--clobber <True/False>]
-```
-
-**Arguments**:
-- `<l1_pi_file>`: Path to the Level-1 Type II PI spectrogram file
-- `<l1_hk_file>`: Path to the corresponding Level-1 Housekeeping (HK) file
-
-**Options**:
-- `-o, --outfile`: Name of the output corrected file (default: <input>_dt_corr.pi)
-- `-c, --clobber`: Overwrite the output file if it exists
-
-**Example**:
-```bash
-solexs-dtcorr -i AL1_SOLEXS_20240212_SDD2_L1.pi.gz -hk AL1_SOLEXS_20240212_SDD2_L1.hk.gz
-```
 
 
 ## Example Jupyter Notebook
