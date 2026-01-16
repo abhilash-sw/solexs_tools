@@ -5,7 +5,7 @@
 # @File Name: genlc.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 07:25:54 pm
+# @Last Modified time: 2026-01-16 05:28:53 pm
 #####################################################
 
 import numpy as np
@@ -34,7 +34,7 @@ def write_lc(time_data, lc_data, time_bin, filter_sdd, outfile, dtcorr=False, fl
         ext_name = 'FLUX'
         hdu_clas3 = 'FLUX'
     else:
-        col_name = 'RATE' # Standard OGIP for count/s (was 'COUNTS')
+        col_name = 'COUNTS'
         col_unit = 'count/s'
         ext_name = 'RATE'
         hdu_clas3 = 'RATE'
