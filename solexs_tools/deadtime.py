@@ -5,14 +5,14 @@
 # @File Name: deadtime.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 05:06:40 pm
+# @Last Modified time: 2026-02-04 09:38:53 pm
 #####################################################
 
 import os, argparse
 import numpy as np
 from astropy.io import fits
 from .caldb_utils import get_caldb_file
-
+from scipy.special import lambertw 
 
 def get_deadtime_params(filter_sdd,obs_date=None):
 
@@ -21,10 +21,11 @@ def get_deadtime_params(filter_sdd,obs_date=None):
     with fits.open(dt_file) as hdul:
         
         # eff_factor = hdul[1].data['EFFICIENCY-FACTOR'][0]
+        tau_temporal = hdul[1].data['DEAD-TIME-TEMPORAL'][0]
         offset_cr1 = hdul[1].data['OFFSET-COUNTRATE-1'][0]
         offset_cr2 = hdul[1].data['OFFSET-COUNTRATE-2'][0]
         
-    return offset_cr1, offset_cr2, dt_file
+    return tau_temporal, offset_cr1, offset_cr2, dt_file
 
 def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
     """
@@ -39,7 +40,7 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
 
     filter_sdd = hdu1[1].header['FILTER']
     obs_date = hdu1[0].header['OBS_DATE']
-    offset_cr1, offset_cr2, dt_file = get_deadtime_params(filter_sdd,obs_date)
+    tau_temporal, offset_cr1, offset_cr2, dt_file = get_deadtime_params(filter_sdd,obs_date)
 
     hk_hdul = fits.open(hk_file)
     hk_data = hk_hdul[1].data
@@ -52,7 +53,9 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
     else:
         offset_cr = offset_cr1
 
-    corr_factor = (fast_cr - offset_cr) / slow_cr
+    fast_cr_dt_corr = -lambertw(-fast_cr * tau_temporal).real / tau_temporal
+
+    corr_factor = (fast_cr_dt_corr - offset_cr) / slow_cr
     new_exposures = 1/corr_factor
     new_exposures = np.clip(new_exposures,0,1)
     
