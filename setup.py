@@ -5,7 +5,7 @@
 # @File Name: setup.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-06 07:29:09 pm
+# @Last Modified time: 2026-02-04 09:39:13 pm
 #####################################################
 
 from setuptools import setup, find_packages
@@ -28,6 +28,7 @@ setup(
     install_requires=[
         "numpy",
         "astropy",
+        "scipy",
     ],
     entry_points={
         "console_scripts": [
