@@ -5,7 +5,7 @@
 # @File Name: genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-01-19 11:37:45 am
+# @Last Modified time: 2026-02-05 04:31:50 pm
 #####################################################
 
 import argparse
@@ -68,7 +68,7 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
     _hdu_list[1].header.set('TSTART',tstart_utc_time_str)
     _hdu_list[1].header.set('TSTOP',tstop_utc_time_str)
     _hdu_list[1].header.set('TIMESYS', 'UTC')
-    _hdu_list[1].header.set('EXPOSURE',f'{exposure:.5f}')
+    _hdu_list[1].header.set('EXPOSURE',float(f'{exposure:.5f}'))
 
     
     _HEADER_KEYWORDS = (
