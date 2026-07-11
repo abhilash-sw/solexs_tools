@@ -5,7 +5,7 @@
 # @File Name: genspec.py
 # @Project: solexs_tools
 #
-# @Last Modified time: 2026-02-05 04:31:50 pm
+# @Last Modified time: 2026-07-11 12:44:05 pm
 #####################################################
 
 import argparse
@@ -17,11 +17,28 @@ import warnings
 from astropy.io.fits.verify import VerifyWarning
 
 from . import __version__
-from .time_utils import unix_time_to_utc
+from .time_utils import unix_time_to_utc, utc_to_unix_time
 from .caldb_utils import get_caldb_file
 
 
 QUALITY_THRESHOLD_CHANNEL = 56 #2.74 - 2.79
+
+def parse_time_param(val):
+    """
+    Helper function to parse time input from CLI or Python call.
+    Accepts either a Unix timestamp (int/float/str) or a UTC ISO 8601 string.
+    Returns a float Unix timestamp.
+    """
+    try:
+        return float(val)
+    except ValueError:
+        try:
+            return float(utc_to_unix_time(str(val)))
+        except Exception as e:
+            raise ValueError(
+                f"Invalid time argument '{val}'. Must be a Unix timestamp or UTC ISO string (e.g., '2024-02-12T11:00:00'). Error: {e}"
+            )
+
 
 def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, filter_sdd, outfile, dtcorr=False, clobber=True):
     # writing file
@@ -154,6 +171,9 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
 
 def solexs_genspec(spec_file,tstart,tstop,gti_file,outfile=None,clobber=True): # times in unix seconds
 
+    tstart = parse_time_param(tstart)
+    tstop = parse_time_param(tstop)
+
     hdu1 = fits.open(spec_file)
 
     if hdu1[0].header['CONTENT'] != 'Type II PHA file':
@@ -265,8 +285,8 @@ def solexs_genspec_cli():
 
     # Add arguments
     parser.add_argument('-i','--infile', type=str, help='Path to the PI spectrogram file (Type II)')
-    parser.add_argument('-tstart', type=float, help='Start time in Unix seconds')
-    parser.add_argument('-tstop', type=float, help='Stop time in Unix seconds')
+    parser.add_argument('-tstart', type=parse_time_param, help='Start time in Unix seconds or UTC ISO string (e.g., 2024-02-12T11:00:00)')
+    parser.add_argument('-tstop', type=parse_time_param, help='Stop time in Unix seconds or UTC ISO string (e.g., 2024-02-12T11:00:00)')
     parser.add_argument('-gti', '--gti_file', type=str, help='Path to the Level 1 Good Time Interval File')
     parser.add_argument('-o','--outfile', type=str, help='Output file name (optional)', default=None)
     parser.add_argument('-c','--clobber', type=bool, default= False, help='Overwrite existing file if it exists')
@@ -283,6 +303,10 @@ def solexs_genspec_cli():
 
 
 def solexs_genmultispec(spec_file, tstart, tstop, time_bin, gti_file, output_dir='.', clobber=True):
+
+    tstart = parse_time_param(tstart)
+    tstop = parse_time_param(tstop)
+
     hdu1 = fits.open(spec_file)
 
     if hdu1[0].header['CONTENT'] != 'Type II PHA file':
@@ -379,8 +403,8 @@ def solexs_genmultispec_cli():
 
     # Add arguments
     parser.add_argument('-i','--infile', type=str, help='Path to the PI spectrogram file (Type II)')
-    parser.add_argument('-tstart', type=float, help='Start time in Unix seconds')
-    parser.add_argument('-tstop', type=float, help='Stop time in Unix seconds')
+    parser.add_argument('-tstart', type=parse_time_param, help='Start time in Unix seconds or UTC ISO string (e.g., 2024-02-12T11:00:00)')
+    parser.add_argument('-tstop', type=parse_time_param, help='Stop time in Unix seconds or UTC ISO string (e.g., 2024-02-12T11:00:00)')
     parser.add_argument('-tbin', '--time_bin', type=float, help='Time bin size in seconds')
     parser.add_argument('-gti', '--gti_file', type=str, help='Path to the Level 1 Good Time Interval File')
     parser.add_argument('-o', '--output_dir', type=str, default='.', help='Directory to store the generated spectra')
