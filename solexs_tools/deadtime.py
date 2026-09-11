@@ -45,13 +45,15 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
     hk_hdul = fits.open(hk_file)
     hk_data = hk_hdul[1].data
 
+    if len(hk_data) != len(hdu1[1].data):
+            raise ValueError(f"Row mismatch: HK file has {len(hk_data)} rows, PI file has {len(hdu1[1].data)} rows.")    
+
     slow_cr = hk_data['SLOW_COUNTS']
     fast_cr = hk_data['FAST_COUNTS']
+
+    dtcorr_mode_array = hk_data['DTCORR-MODE']
     
-    if np.nanmin(fast_cr) < 500:
-        offset_cr = offset_cr2
-    else:
-        offset_cr = offset_cr1
+    offset_cr = np.where(dtcorr_mode_array == 2, offset_cr2, offset_cr1)
 
     fast_cr_dt_corr = -lambertw(-fast_cr * tau_temporal).real / tau_temporal
 
@@ -68,7 +70,7 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
     header['DTCORR'] = (True, 'Deadtime correction applied')
 
     header['HISTORY'] = f"Deadtime corrected using {os.path.basename(dt_file)}"
-    header['HISTORY'] = f"Deadtime correction Offset Count Rate ={offset_cr}"
+    header['HISTORY'] = f"Dynamic offsets used: Mode 1={offset_cr2} cps, Mode 2={offset_cr1} cps"
 
     if output_file is None:
         pi_file_basename = os.path.basename(pi_file)
