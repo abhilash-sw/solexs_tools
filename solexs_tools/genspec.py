@@ -21,7 +21,8 @@ from .time_utils import unix_time_to_utc, utc_to_unix_time
 from .caldb_utils import get_caldb_file
 
 
-QUALITY_THRESHOLD_CHANNEL = 56 #2.74 - 2.79
+QUALITY_LOWER_THRESHOLD_CHANNEL = 56 #2.74 - 2.79
+QUALITY_UPPER_THRESHOLD_CHANNEL = 240 #14.93 - 15.03
 
 def parse_time_param(val):
     """
@@ -48,7 +49,7 @@ def write_spec(channel, spec_data, stat_err, sys_err, tstart, tstop, exposure, f
                                     
     hdu_list.append(primary_hdu)
 
-    quality = np.where(channel <= QUALITY_THRESHOLD_CHANNEL, 1, 0)
+    quality = np.where((channel <= QUALITY_LOWER_THRESHOLD_CHANNEL) | (channel >=QUALITY_UPPER_THRESHOLD_CHANNEL), 1, 0)
 
     fits_columns = []
     col1 = fits.Column(name='CHANNEL',format='1J',array=channel)
