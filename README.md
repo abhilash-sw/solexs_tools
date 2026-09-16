@@ -163,7 +163,7 @@ solexs-genlc -i AL1_SOLEXS_20240212_SDD2_L1_dt_corr.pi.gz -elo 3 -ehi 10 --flux 
 
 ---
 
-### 4. Spectral Generation
+### 4. Spectral Data Generation
 
 #### `solexs-genspec`
 Generate a type-I PI spectral file from Level 1 PI spectrogram file (Type II) for a specified time range.
