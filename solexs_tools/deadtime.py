@@ -74,7 +74,7 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
 
     header['DTCORR'] = (True, 'Deadtime correction applied')
 
-    header['CREATOR'] = f'solexs_tools-{__version__}
+    header['CREATOR'] = f'solexs_tools-{__version__}'
 
     header['HISTORY'] = f"Deadtime corrected using {os.path.basename(dt_file)}"
     header['HISTORY'] = f"Dynamic offsets used: Mode 1={offset_cr2} cps, Mode 2={offset_cr1} cps"
