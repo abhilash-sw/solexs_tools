@@ -14,6 +14,7 @@ from astropy.io import fits
 from .caldb_utils import get_caldb_file
 from scipy.special import lambertw 
 from . import __version__
+import datetime
 
 def get_deadtime_params(filter_sdd,obs_date=None):
 
@@ -73,6 +74,8 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
 
     header['DTCORR'] = (True, 'Deadtime correction applied')
 
+    header['CREATOR'] = f'solexs_tools-{__version__}
+
     header['HISTORY'] = f"Deadtime corrected using {os.path.basename(dt_file)}"
     header['HISTORY'] = f"Dynamic offsets used: Mode 1={offset_cr2} cps, Mode 2={offset_cr1} cps"
 
@@ -80,6 +83,10 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
         pi_file_basename = os.path.basename(pi_file)
         pi_file_basename = pi_file_basename.split('.')[0]
         output_file = f"{pi_file_basename}_dt_corr.pi.gz"
+
+    hdu1[0].header['CREATOR'] = f'solexs_tools-{__version__}
+    hdu1[0].header['FILENAME'] = output_file
+    hdu1[0].header['DATE'] = datetime.datetime.now().strftime("%Y-%m-%d")
 
     hdu1.writeto(output_file,overwrite=clobber,checksum=True)
 
