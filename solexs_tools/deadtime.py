@@ -84,7 +84,7 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
         pi_file_basename = pi_file_basename.split('.')[0]
         output_file = f"{pi_file_basename}_dt_corr.pi.gz"
 
-    hdu1[0].header['CREATOR'] = f'solexs_tools-{__version__}
+    hdu1[0].header['CREATOR'] = f'solexs_tools-{__version__}'
     hdu1[0].header['FILENAME'] = output_file
     hdu1[0].header['DATE'] = datetime.datetime.now().strftime("%Y-%m-%d")
 
