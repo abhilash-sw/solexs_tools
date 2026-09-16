@@ -175,8 +175,8 @@ solexs-genspec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -gti <l1_gti_file
 
 **Arguments**:
 - `<l1_pi_file>`: Path to the Level 1 PI spectrogram file (Type II)
-- `<tstart>`: Start time in Unix seconds
-- `<tstop>`: Stop time in Unix seconds
+- `<tstart>`: Start time in Unix seconds or UTC ISO string (e.g., 2024-02-12T11:00:00)
+- `<tstop>`: Stop time in Unix seconds or UTC ISO string (e.g., 2024-02-12T11:00:00)
 - `<l1_gti_file>`: Path to the Level 1 Good Time Interval File
 
 **Options**:
@@ -200,8 +200,8 @@ solexs-genmultispec -i <l1_pi_file> -tstart <tstart> -tstop <tstop> -tbin <time_
 
 **Arguments**:
 - `<l1_pi_file>`: Path to the Level 1 PI spectrogram file (Type II)
-- `<tstart>`: Start time in Unix seconds
-- `<tstop>`: Stop time in Unix seconds
+- `<tstart>`: Start time in Unix seconds or UTC ISO string (e.g., 2024-02-12T11:00:00)
+- `<tstop>`: Stop time in Unix seconds or UTC ISO string (e.g., 2024-02-12T11:00:00)
 - `<time_bin>`: Time bin size in seconds
 - `<l1_gti_file>`: Path to the Level 1 Good Time Interval File
 
