@@ -12,6 +12,7 @@ import argparse
 import importlib.resources
 import shutil, os, json, datetime
 from pathlib import Path
+from . import __version__
 
 def get_caldb_base_dir():
     CALDB_BASE_DIR = os.environ.get('SOLEXS_CALDB')
@@ -82,6 +83,9 @@ def solexs_caldb_extract_cli():
         type=str, 
         help="The target directory to copy CALDB files (e.g., /home/user/solexs_caldb)"
     )
+
+    parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {__version__}')
+
     args = parser.parse_args()
     
     target_path = Path(args.output_directory).resolve()

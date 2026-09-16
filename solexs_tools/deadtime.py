@@ -13,6 +13,7 @@ import numpy as np
 from astropy.io import fits
 from .caldb_utils import get_caldb_file
 from scipy.special import lambertw 
+from . import __version__
 
 def get_deadtime_params(filter_sdd,obs_date=None):
 
@@ -94,6 +95,7 @@ def solexs_deadtime_correction_cli():
     parser.add_argument("-hk", "--hkfile", required=True, help="Path to the Level 1 Housekeeping file")
     parser.add_argument("-o", "--outfile", help="Output filename (default: <input>_dt_corr.pi)")
     parser.add_argument('-c','--clobber', type=bool, default= False, help='Overwrite existing file if it exists')
+    parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {__version__}')
 
     args = parser.parse_args()
 

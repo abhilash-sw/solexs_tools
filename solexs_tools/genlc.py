@@ -277,6 +277,7 @@ def solexs_genlc_cli():
     parser.add_argument('-o','--outfile', type=str, help='Output file name (optional)', default=None)
     parser.add_argument("--flux", type=bool, default= False, help="Generate Flux Light Curve (W/m^2)")
     parser.add_argument('-c','--clobber', type=bool, default= False, help='Overwrite existing file if it exists')
+    parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {__version__}')
 
     # Parse arguments
     args = parser.parse_args()

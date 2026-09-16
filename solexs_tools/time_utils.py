@@ -10,6 +10,7 @@
 
 import argparse
 from datetime import datetime, timezone
+from . import __version__
 
 def unix_time_to_utc(unix_time):
     """
@@ -51,6 +52,7 @@ def solexs_time2utc_cli():
         description="Convert Unix timestamp to UTC in ISO 8601 format."
     )
     parser.add_argument("unix_time", type=int, help="Unix timestamp (e.g., 1633046400)")
+    parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {__version__}')
     args = parser.parse_args()
 
     try:
@@ -67,6 +69,7 @@ def solexs_utc2time_cli():
     parser.add_argument(
         "utc_time", type=str, help="UTC time in ISO 8601 format (e.g., 2021-10-01T00:00:00)"
     )
+    parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {__version__}')
     args = parser.parse_args()
 
     try:

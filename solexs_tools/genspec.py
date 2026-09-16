@@ -293,6 +293,7 @@ def solexs_genspec_cli():
     parser.add_argument('-gti', '--gti_file', type=str, help='Path to the Level 1 Good Time Interval File')
     parser.add_argument('-o','--outfile', type=str, help='Output file name (optional)', default=None)
     parser.add_argument('-c','--clobber', type=bool, default= False, help='Overwrite existing file if it exists')
+    parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {__version__}')
 
     # Parse arguments
     args = parser.parse_args()
@@ -414,6 +415,7 @@ def solexs_genmultispec_cli():
     parser.add_argument('-gti', '--gti_file', type=str, help='Path to the Level 1 Good Time Interval File')
     parser.add_argument('-o', '--output_dir', type=str, default='.', help='Directory to store the generated spectra')
     parser.add_argument('-c','--clobber', type=bool, default= False, help='Overwrite existing file if it exists')
+    parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {__version__}')
     # Parse arguments
     args = parser.parse_args()
 
