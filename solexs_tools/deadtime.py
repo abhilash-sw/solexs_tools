@@ -83,7 +83,9 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
 
 
 def solexs_deadtime_correction_cli():
-    parser = argparse.ArgumentParser(description="Apply Deadtime Correction to Level 1 PI spectrogram file (Type II)")
+    parser = argparse.ArgumentParser(
+        prog="solexs-dtcorr",
+        description="Apply Deadtime Correction to Level 1 PI spectrogram file (Type II)")
 
     parser.add_argument("-i", "--infile", required=True, help="Path to the Level 1 PI spectrogram file (Type II)")
     parser.add_argument("-hk", "--hkfile", required=True, help="Path to the Level 1 Housekeeping file")

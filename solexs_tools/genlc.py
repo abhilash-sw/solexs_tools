@@ -265,7 +265,9 @@ def solexs_genlc(spec_file, ene_low, ene_high, time_bin=None, outfile=None, flux
 
 def solexs_genlc_cli():
     # Create the parser
-    parser = argparse.ArgumentParser(description='Generate a light curve file from PI spectrogram file (Type II) for a specified energy range.')
+    parser = argparse.ArgumentParser(
+        prog="solexs-genlc",
+        description='Generate a light curve file from PI spectrogram file (Type II) for a specified energy range.')
 
     # Add arguments
     parser.add_argument('-i','--infile', type=str, help='Path to the PI spectrogram file (Type II)')

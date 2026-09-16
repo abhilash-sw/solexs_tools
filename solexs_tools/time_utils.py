@@ -47,6 +47,7 @@ def utc_to_unix_time(utc_time_str):
 
 def solexs_time2utc_cli():
     parser = argparse.ArgumentParser(
+        prog="solexs-time2utc",
         description="Convert Unix timestamp to UTC in ISO 8601 format."
     )
     parser.add_argument("unix_time", type=int, help="Unix timestamp (e.g., 1633046400)")
@@ -60,6 +61,7 @@ def solexs_time2utc_cli():
 
 def solexs_utc2time_cli():
     parser = argparse.ArgumentParser(
+        prog="solexs-utc2time",
         description="Convert UTC in ISO 8601 format to Unix timestamp."
     )
     parser.add_argument(

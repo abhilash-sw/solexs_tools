@@ -74,6 +74,7 @@ def extract_caldb(target_path: Path):
 
 def solexs_caldb_extract_cli():
     parser = argparse.ArgumentParser(
+        prog="solexs-caldb-extract",
         description="Extract the default SoLEXS CALDB to a specified directory."
     )
     parser.add_argument(
