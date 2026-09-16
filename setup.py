@@ -13,7 +13,7 @@ import os
 
 setup(
     name="solexs_tools",
-    version="1.4",
+    version="1.6",
     description="A toolkit for SoLEXS data analysis",
     author="SoLEXSPOC",
     author_email="sarwade@ursc.gov.in",
