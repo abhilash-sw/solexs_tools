@@ -38,8 +38,8 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
     if hdu1[0].header['CONTENT'] != 'Type II PHA file':
         raise TypeError('Input File is not Type II PHA file.')
 
-    if hdu1[0].header['DTCORR']:
-        raise TypeError('Input File is alread Deadtime Corrected.')
+    if hdu1[1].header.get('DTCORR', False):
+        raise ValueError('Input File is already Deadtime Corrected.')
 
 
     filter_sdd = hdu1[1].header['FILTER']
