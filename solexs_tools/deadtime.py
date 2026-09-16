@@ -37,6 +37,9 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
     if hdu1[0].header['CONTENT'] != 'Type II PHA file':
         raise TypeError('Input File is not Type II PHA file.')
 
+    if hdu1[0].header['DTCORR']:
+        raise TypeError('Input File is alread Deadtime Corrected.')
+
 
     filter_sdd = hdu1[1].header['FILTER']
     obs_date = hdu1[0].header['OBS_DATE']
@@ -46,7 +49,7 @@ def apply_deadtime_correction(pi_file, hk_file, output_file=None,clobber=True):
     hk_data = hk_hdul[1].data
 
     if len(hk_data) != len(hdu1[1].data):
-            raise ValueError(f"Row mismatch: HK file has {len(hk_data)} rows, PI file has {len(hdu1[1].data)} rows.")    
+        raise ValueError(f"Row mismatch: HK file has {len(hk_data)} rows, PI file has {len(hdu1[1].data)} rows.")        
 
     slow_cr = hk_data['SLOW_COUNTS']
     fast_cr = hk_data['FAST_COUNTS']
